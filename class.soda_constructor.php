@@ -1,7 +1,13 @@
 <?php
+/**
+ * Project specific file.
+ * TODO: delete from standard Soda distribution.
+ * @package Soda
+ */
 //require_once("../../config.php");
 require_once("lib.php");
 
+// This class is 'Compass' specific. To be omitted from Standard Soda Distribution.
 class soda_constructor {
 
     var $user;
@@ -19,6 +25,7 @@ class soda_constructor {
         page_id_and_class($pageid, $pageclass);
         $this->print_button = $print_button;
         $this->initialize_module($module_name, $module_inhabitant);
+        echo "<link href='http://localhost/kompas/theme/emergo/form.css' type='text/css' rel='stylesheet'></link>";
         echo "<div id='$pageid$id_postfix' style='text-align: left' class='compass_mode_$mode'>";
         // Temp
         echo "<style>
