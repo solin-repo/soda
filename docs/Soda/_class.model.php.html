@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page class.model.php</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name">/class.model.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+			|													<a href="#sec-functions">Functions</a>
+			</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+			|																<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top">
+						<a href="../Soda/model.html">model</a>
+					</td>
+					<td>
+											A model object usually corresponds to exactly one database record. All columns  are made available as object properties pointing to their corresponding database values (if any).
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	
+	
+	
+	<a name="sec-functions"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Functions</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|															<span class="disabled">Functions</span>
+		</div>
+		<div class="info-box-body">	
+			<a name="functionadd_error" id="functionadd_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">add_error</span> (line <span class="line-number">720</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Adds an error to soda_error::$validation_errors, for the given class of the model,  the specific instance of the model (i.e. this object) and the property $field.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			add_error
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$message</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$field</span><span class="var-description">: Name of the property which is in error</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$message</span><span class="var-description">: Error message meant for the user</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionadd_rule" id="functionadd_rule"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">add_rule</span> (line <span class="line-number">618</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Adds a rule to the validation rules for this model.</p>
+<p class="description"><p>This method is typically called from within model#define_validation_rules.</p><p>Example:</p><p>$this-&gt;add_rule('label', 'Please fill in a label.', function($label) { return ( trim($label) != '' ); });</p><p>If this rule fails, an error will be added to soda_error::$validation_errors, for the given class of the model,  the specific instance of the model (i.e. this object) and the field.</p></p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			add_rule
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$message</span>, <span class="var-type">function</span>&nbsp;<span class="var-name">$rule_code</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$field</span><span class="var-description">: Name of the property on which this rule operates</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$message</span><span class="var-description">: Message to display when the validation fails</span>			</li>
+					<li>
+				<span class="var-type">function</span>
+				<span class="var-name">$rule_code</span><span class="var-description">: Validation code to be executed whenever the model is validated</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionbuild_where_clause" id="functionbuild_where_clause"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">build_where_clause</span> (line <span class="line-number">492</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns a string containing a WHERE clause</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			build_where_clause
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$property_names</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$property_names</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncall_delete_all" id="functioncall_delete_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">call_delete_all</span> (line <span class="line-number">378</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Calls delete_all with a sql WHERE clause which is constructed from the name of the calling function $method</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns ADODB RecordSet object, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			call_delete_all
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns mentioned in the where clause</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncall_find" id="functioncall_find"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">call_find</span> (line <span class="line-number">441</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Wrapper for finder method: Calls finder with 'find' as finder_name and 'load' as loader_name.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> object, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">object Returns</span>
+		<span class="method-name">
+			call_find
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of arguments: the last argument is an optional array of objects to search through,                               the other elements are values which the finder should compare as search criteria</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncall_find_all" id="functioncall_find_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">call_find_all</span> (line <span class="line-number">454</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Wrapper for finder method: Calls finder with 'find_all' as finder_name and 'load_all' as loader_name.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array objects, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			call_find_all
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of arguments: the last argument is an optional array of objects to search through,                               the other elements are values which the finder should compare as search criteria</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncall_load" id="functioncall_load"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">call_load</span> (line <span class="line-number">508</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Wrapper for loader: calls method loader with 'load' as the $loader_name</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an object, an array of objects or false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			call_load
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncall_load_all" id="functioncall_load_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">call_load_all</span> (line <span class="line-number">520</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Wrapper for loader: calls method loader with 'load_all' as the $loader_name</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an object, an array of objects or false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			call_load_all
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns used in the dynamically constructed WHERE clause</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functioncollect" id="functioncollect"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">collect</span> (line <span class="line-number">561</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns all objects from $collection which have the variable $property</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array of objects or an empty array</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			collect
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$property</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$collection</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$property</span><span class="var-description">: Name of the property we are looking for</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$collection</span><span class="var-description">: Array of items to search through</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiondefine_validation_rules" id="functiondefine_validation_rules"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">define_validation_rules</span> (line <span class="line-number">598</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This method is called from the model's constructor.</p>
+<p class="description"><p>Overwrite this method if you want to specify validation rules for your model.</p></p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			define_validation_rules
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functiondelete" id="functiondelete"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">delete</span> (line <span class="line-number">671</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the deleted column to 1 and saves the object to the database.</p>
+<p class="description"><p>Please note: there is a 'plural' version for this method model::delete_all, but this method actually deletes  the objects from the database.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns true upon success or false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			delete
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functiondelete_all" id="functiondelete_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">delete_all</span> (line <span class="line-number">391</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Deletes all objects of this class from the database.</p>
+<p class="description"><p>Please note: there is a 'singular' version for this method model#delete</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns ADODB RecordSet object, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			delete_all
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$where_clause</span> = <span class="var-default">false</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$where_clause</span><span class="var-description">: SQL where clause (optional)</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionextract_properties" id="functionextract_properties"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">extract_properties</span> (line <span class="line-number">408</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Turns a string of properties into an array  This method is typically used to retrieve the column names used in the method call to dynamically created  loaders and finders. Example: company_id_and_year is turned into array('company_id', 'year').</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array of column names</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			extract_properties
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$properties</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$properties</span><span class="var-description">: String of SQL column names separated by '_and_'</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionfinder" id="functionfinder"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">finder</span> (line <span class="line-number">472</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Deconstructs a dynamic method call into a call to a finder  The arguments array may optionally contain, as the last element, an array of objects to search through.</p>
+<p class="description"><p>If you do not provide this array searchable objects, the find and find_all will try to retrieve the  searchable objects from the database by calling the method in $loader_name</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array objects, an object, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			finder
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$finder_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$loader_name</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method called dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of arguments: the last argument is an optional array of objects to search through,                                       the other elements are values which the finder should compare as search criteria</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$finder_name</span><span class="var-description">: Finder method to call for finding one or more objects</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$loader_name</span><span class="var-description">: Loader method to use if no array of searchable objects was provided</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionfind_all" id="functionfind_all"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">find_all</span> (line <span class="line-number">549</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of items which match whatever criterion is specified in the anonymous function $compare.</p>
+<p class="description"><p>Please note this is just a wrapper for array_filter - mainly here for consistency with similarly named methods  'find_all_by_' and model::find.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns item of mixed type or false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			find_all
+		</span>
+					(<span class="var-type">function</span>&nbsp;<span class="var-name">$compare</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$collection</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">function</span>
+				<span class="var-name">$compare</span><span class="var-description">: Function which returns the item that matches the criterion specified in the function body</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$collection</span><span class="var-description">: Array of items to search through</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionflatten" id="functionflatten"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">flatten</span> (line <span class="line-number">575</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Reduces a nested array to a flat array.</p>
+<p class="description"><p>This method is typically used to merge multiple collections of objects into one array.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array of objects or an empty array</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			flatten
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$array</span><span class="var-description">: Array of arrays (typically) and objects</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionget_first_error" id="functionget_first_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">get_first_error</span> (line <span class="line-number">747</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the first error message for this object.</p>
+<p class="description"><p>If you provide a property name $field, only the error stack for this property is checked,  otherwise the stack for the entire object.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns the error message or false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			get_first_error
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$field</span> = <span class="var-default">false</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$field</span><span class="var-description">: Name of the property to check (optional)</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionget_properties" id="functionget_properties"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">get_properties</span> (line <span class="line-number">628</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the public properties and their corresponding values for this object.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an associative array of all properties of this model pointing to the corresponding values.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			get_properties
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functionin_error" id="functionin_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">in_error</span> (line <span class="line-number">734</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Finds out if this object is &quot;in error&quot; (e.g. is not valid)  If you provide a property name $field, only the status of this property is checked,  otherwise the entire object.</p>
+<p class="description"><p>Please note that an error may also have been added for other reasons than an invalid state.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns true if in error, otherwise false.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			in_error
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$field</span> = <span class="var-default">false</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$field</span><span class="var-description">: Name of the property to check (optional)</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionloader" id="functionloader"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">loader</span> (line <span class="line-number">533</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Deconstructs a dynamic method call into a call to a loader</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array objects, an object, or false if an error occured.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			loader
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$loader_name</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method called dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns used in the dynamically constructed WHERE clause</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$loader_name</span><span class="var-description">: Loader method to use</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionmap_properties_to_values" id="functionmap_properties_to_values"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">map_properties_to_values</span> (line <span class="line-number">424</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Builds an associative array by using an array of property names as the keys and an array of arguments  as the values.</p>
+<p class="description"><p>This method is typically used to deconstruct a dynamic finder or loader call into a SQL where  clause which is used in default load or find call.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an associative array of column names pointing to argument values</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			map_properties_to_values
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$property_names</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$property_names</span><span class="var-description">: Array of column names</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of values for the columns</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionplural" id="functionplural"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">plural</span> (line <span class="line-number">587</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the plural version of the model name</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns the plural version of the model name</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			plural
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functionsave" id="functionsave"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">save</span> (line <span class="line-number">685</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Validates and saves the object.</p>
+<p class="description"><p>If the validation failes, the object is not saved. Instead, false is returned.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns true upon success, otherwise false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			save
+		</span>
+					([<span class="var-type">integer</span>&nbsp;<span class="var-name">$record_id</span> = <span class="var-default">false</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$record_id</span><span class="var-description">: Id of the object to save (optional)</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionsave_without_validation" id="functionsave_without_validation"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">save_without_validation</span> (line <span class="line-number">699</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Saves the object.</p>
+<p class="description"><p>If you provide a record id, or a valid id property is present, the object will be updated in the database.  Otherwise an insert will take place.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns the record id of the object upon success, otherwise false</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			save_without_validation
+		</span>
+					([<span class="var-type">integer</span>&nbsp;<span class="var-name">$record_id</span> = <span class="var-default">false</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$record_id</span><span class="var-description">: Id of the object to save (optional)</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionvalidate" id="functionvalidate"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">validate</span> (line <span class="line-number">646</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Validates the object.</p>
+<p class="description"><p>Calls all validation rules for this model.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns false if any of the validation rules failed, otherwise true</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			validate
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 19 Oct 2011 09:36:22 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

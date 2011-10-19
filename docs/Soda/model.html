@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class model</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class model</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A model object usually corresponds to exactly one database record. All columns  are made available as object properties pointing to their corresponding database values (if any).</p>
+<p class="description"><p>In addition, a number of methods are available which allow you to perform standard database actions.  For instance, you can invoke the 'save' method on a Soda model object.  A model class is also the place where you specify &quot;business logic&quot;, including validation rules.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_class.model.php.html">/class.model.php</a> (line <span class="field">40</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$finder_signatures" title="details" class="var-name">$finder_signatures</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$has_many" title="details" class="var-name">$has_many</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$plural" title="details" class="var-name">$plural</a>
+				</div>
+																																																				<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$validation_rules" title="details" class="var-name">$validation_rules</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																				<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#associative_load" title="details" class="method-name">associative_load</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$associated_collection</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$association_name</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#attach_associations" title="details" class="method-name">attach_associations</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$children</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$association_name</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">mixed</span>
+										<a href="#find" title="details" class="method-name">find</a>
+											(<span class="var-type">function</span>&nbsp;<span class="var-name">$compare</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$collection</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#instantiate_all" title="details" class="method-name">instantiate_all</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties_collection</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">object Returns</span>
+										<a href="#load" title="details" class="method-name">load</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$where_clause</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$include</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#load_all" title="details" class="method-name">load_all</a>
+											([<span class="var-type">array</span>&nbsp;<span class="var-name">$where_clause</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$include</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$limitfrom</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$limitnum</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#load_associations" title="details" class="method-name">load_associations</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$associations</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">boolean</span>
+										<a href="#save_all" title="details" class="method-name">save_all</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">mixed</span>
+										<a href="#__callStatic" title="details" class="method-name">__callStatic</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+									</div>
+								
+												<div class="method-definition">
+											<span class="method-result">object</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties</span>)
+									</div>
+																																																																																</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$finder_signatures" id="$finder_signatures"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$finder_signatures</span>
+			 = <span class="var-default">array(<br />        'find_all',<br />        'find',<br />        'load_all',<br />        'load',<br />        'delete_all'<br />    )</span>			(line <span class="line-number">45</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$has_many" id="$has_many"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$has_many</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">44</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$plural" id="$plural"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$plural</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$validation_rules" id="$validation_rules"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$validation_rules</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">42</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodassociative_load" id="associative_load"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method associative_load</span> (line <span class="line-number">241</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Loads a collection of parent objects by association with a collection of child objects.</p>
+<p class="description"><p>For each child object, this function will attempt to look for the associated  parent object. The child objects are inserted into an appropriately named property  of the parent object.  Each child object will also be endowed with a property named after the class of the parent object.  This property points to the parent object.</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$authors&nbsp;</span>=&nbsp;<span class="src-id">author</span><span class="src-sym">::</span><span class="src-id">associative_load</span><span class="src-sym">(</span><span class="src-var">$books</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>This will lookup all authors with the id $book-&gt;author_id and load them  as a collection of author objects.</p><p>Each author object will be endowed with the collection of associated book objects:  $author-&gt;books</p><p>And each book object will be endowed with an author property, pointing to the author object:  $book-&gt;author</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			associative_load
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$associated_collection</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$association_name</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$associated_collection</span><span class="var-description">: collection which contains objects with parent_ids</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$association_name</span><span class="var-description">: name for the property where the child objects will reside (optional)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodattach_associations" id="attach_associations"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method attach_associations</span> (line <span class="line-number">193</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Attaches associated child objects to parent objects.</p>
+<p class="description"><p>Example: seat::load_associations($seats, $bookings)</p><p>This will endow each 'seat' object with the property bookings.  If a particular seat has no bookings, the property will be an empty array.  Each booking, in turn, will be endowed with a property 'seat', pointing to the parent object.</p><p>The associations parameter can also be a nested array:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'author'&nbsp;</span>=&gt;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'book'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'chapter'</span><span class="src-sym">))</span></div></li>
+</ol></div></p><p>This 'include' array will result in an even deeper object hierarchy.</p><p>If don't specify the optional association name, the pluralized name of the child model will be used as  the property name.  Alternatively, if you do specify a name, and the name matches the class name of the child model,  (i.e. is singular), then exactly one associated object will be attached (many-to-one relation will be assumed).</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-id">book</span><span class="src-sym">::</span><span class="src-id">attach_associations</span><span class="src-sym">(</span><span class="src-var">$books</span><span class="src-sym">,&nbsp;</span><span class="src-var">$authors</span><span class="src-sym">,&nbsp;</span><span class="src-str">'author'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>This will create a property 'author' for each book, containing the associated author object</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			attach_associations
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$children</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$association_name</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$objects</span><span class="var-description">: Parent objects to attach the associated models to</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$children</span><span class="var-description">: Associated objects</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$association_name</span><span class="var-description">: Name of the parent's property for the associated objects (optional)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodfind" id="find"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method find</span> (line <span class="line-number">343</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an item from a collection which matches whatever criterion is specified in the anonymous function $compare.</p>
+<p class="description"><p>Please note that there is a 'plural' version as well: model::find_all</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns item of mixed type or false</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			find
+		</span>
+					(<span class="var-type">function</span>&nbsp;<span class="var-name">$compare</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$collection</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">function</span>
+				<span class="var-name">$compare</span><span class="var-description">: Function which returns the item that matches the criterion specified in the function body</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$collection</span><span class="var-description">: Array of items to search through</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodinstantiate_all" id="instantiate_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method instantiate_all</span> (line <span class="line-number">325</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates objects from a collection of properties.</p>
+<p class="description"><p>This function is typically used to convert form post data into a collection of objects.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns objects</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			instantiate_all
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties_collection</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$properties_collection</span><span class="var-description">: Array of property arrays (key value pairs)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodload" id="load"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method load</span> (line <span class="line-number">103</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Loads the first object of the table specified in model::$table_name.</p>
+<p class="description"><p>For example, if your model looks like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">user&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Soda/model.html">model</a>&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">static&nbsp;</span><span class="src-var">$table_name&nbsp;</span>=&nbsp;<span class="src-str">'user'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>then calling $first_user = user::load() will simply return the first user in the database as a Soda model object.</p><p>This method uses an optional array of class names to load associated objects.</p><p>Example: $author = author::load(false, $include = array('book'));</p><p>You can also specify nested relations:</p><p>$publisher = publisher::load(false, $include = array('author' =&gt; 'book'));</p><p>This will load all authors and their books as an object hierarchy:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$first_author&nbsp;</span>=&nbsp;<a href="http://www.php.net/array_shift">array_shift</a><span class="src-sym">(</span><span class="src-var">$publisher</span><span class="src-sym">-&gt;</span><span class="src-id">authors</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$books_for_first_author&nbsp;</span>=&nbsp;<span class="src-var">$first_author</span><span class="src-sym">-&gt;</span><span class="src-id">books</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>Please note that there's also a 'plural' version of this function: model::load_all.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> object or false</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">object Returns</span>
+		<span class="method-name">
+			load
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$where_clause</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$include</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$where_clause</span><span class="var-description">: SQL where clause: use without the WHERE keyword (optional)</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$include</span><span class="var-description">: class names of associated models to include (optional)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodload_all" id="load_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method load_all</span> (line <span class="line-number">282</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Loads all objects of the table specified in model::$table_name</p>
+<p class="description"><p>For example, if your model looks like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">user&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Soda/model.html">model</a>&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">static&nbsp;</span><span class="src-var">$table_name&nbsp;</span>=&nbsp;<span class="src-str">'user'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>then calling $users = user::load_all() will return all users in the database as an array of Soda model objects.</p><p>This method uses an optional array of class names to load associated objects.</p><p>Example: $authors = author::load_all(false, $include = array('book'));</p><p>You can also specify nested relations:</p><p>$publishers = publishers::load_all(false, $include = array('author' =&gt; 'book'));</p><p>This will load all authors and their books as an object hierarchy residing in each publisher object.</p><p>Please note that there's also a 'singular' version of this function: model::load.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			load_all
+		</span>
+					([<span class="var-type">array</span>&nbsp;<span class="var-name">$where_clause</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$include</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$limitfrom</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$limitnum</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$where_clause</span><span class="var-description">: SQL where clause: use without the WHERE keyword (optional)</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$include</span><span class="var-description">: Class names of associated models to include (optional)</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$limitfrom</span><span class="var-description">: Return a subset of records, starting at this point (optional, required if $limitnum is set).</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$limitnum</span><span class="var-description">: Return a subset comprising this many records (optional, required if $limitfrom is set).</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodload_associations" id="load_associations"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method load_associations</span> (line <span class="line-number">139</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Loads specified associations and attaches them to parent objects.</p>
+<p class="description"><p>Example: seat::load_associations($seats, $bookings)</p><p>This will endow each 'seat' object with the property bookings.  If a particular seat has no bookings, the property will be an empty array. In turn, each booking object  will be endowed with a property 'seat', containing a reference to the parent object.</p><p>The associations parameter can also be a nested array:</p><p>array('author' =&gt; array('book' =&gt; 'chapter'))</p><p>The association is recognized if your associated child objects contain a foreign key  which is named [model_name]_id. The model class for the child objects may also contain  a plural version of its name:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">mouse&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Soda/model.html">model</a>&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">static&nbsp;</span><span class="src-var">$plural&nbsp;</span>=&nbsp;<span class="src-str">'mice'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>If you don't specify your own plural version, Soda will simply use an 's' postfix to pluralize.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			load_associations
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$associations</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$objects</span><span class="var-description">: Parent objects to attach the associated models to</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$associations</span><span class="var-description">: Class names of the associated models to be loaded</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsave_all" id="save_all"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method save_all</span> (line <span class="line-number">308</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Calls save method on each object in array $objects.</p>
+<p class="description"><p>The default implementation for model::save is to perform a validation first.  If this fails, then no actual save takes place for that object. All other valid objects  are still saved.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns true if all objects were valid, otherwise false</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			save_all
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$objects</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$objects</span><span class="var-description">: Objects to save</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__callStatic" id="__callStatic"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method __callStatic</span> (line <span class="line-number">360</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delegates calls to non-existing method to a finder or loader.</p>
+<p class="description"><p>If the method is not found in static::$finder_signatures, an exception is thrown.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns mixed type</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			__callStatic
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span><span class="var-description">: Name of the method to call dynamically</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: Array of arguments with the method</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">61</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Instantiates model class with an array of property-value pairs.</p>
+<p class="description"><p>Calls the define_validation_rules method to add validation rules.</p></p>
+	
+	<div class="method-signature">
+		<span class="method-result">object</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$properties</span><span class="var-description">: Properties and their values to populate the model with</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 19 Oct 2011 09:36:23 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
