@@ -1,0 +1,11 @@
+*#Untitled-*#
+moodledata/*
+*~
+*.swp
+*.swo
+log/*.log
+tmp/**/*
+config/database.yml
+*.marks
+tags
+public_html/config.php

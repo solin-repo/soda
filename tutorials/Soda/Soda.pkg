@@ -1,0 +1,22 @@
+<refentry id="{@id}">
+ <refnamediv>
+  <refname>Soda API Documentation</refname>
+ </refnamediv>
+ <refsect1>
+  <title>Soda</title>
+  <para>
+    Soda is a Moodle module to develop new modules. These web pages contain the API documentation for Soda's classes.
+  </para>
+  <para>
+    A basic tutorial for Soda is located here: {@link http://tech.solin.eu/doku.php?id=moodle:using_soda_to_create_new_moodle_modules tech.solin.eu} (use right-click to open in new tab or window).
+  </para>
+  <para>
+    Copyright (C) 2011 Solin - www.solin.eu
+  </para>
+  <para>
+    Programming and development:
+    Onno Schuit (o.schuit.at-or-around.solin.nl)
+  </para>
+ </refsect1>
+</refentry>
+
