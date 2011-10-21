@@ -92,33 +92,61 @@ class helper {
 
     /**
      * Prints opening form tag and hidden form fields to specify the destination of a form post.
-     * If you do not specify the action parameter, the form post will be handled by the default 'save' method of
-     * the current controller.
-     * You can also specify additional parameters to change the default behavior of the form post. Example:
+     * If you do not specify the action as part of the post parameters, the form post will be 
+     * handled by the default 'save' method of the current controller.
+     * You can also specify additional post parameters to change the default behavior of the form post. Example:
      *
      * <code>
-     * $this->form_open(false, array('controller' => 'some_alternative_controller'));
+     * $this->form_open(false, $post_parameters = array('controller' => 'some_alternative_controller'));
      * </code>
      *
-     * @param  string       $action     Controller method to handle the form post, defaults to 'save' (optional)
-     * @param  array        $parameters Array of variables to submit through hidden form fields (optional)
+     * The third argument lets you overwrite the default html attributes of the form tag. The defaults are:
+     * - action: $this->base_url
+     * - method: 'post'
+     * - name:   $this->model_name
+     * - class:  'mform'
+     *
+     * @param  string       $action          Controller method to handle the form post, defaults to 'save' (optional)
+     * @param  array        $post_parameters Array of variables to submit through hidden form fields (optional)
+     * @param  array        $html_attributes Array of attributes to include in form tag (optional)
      * @return void
      */
-    function form_open($action = 'save', $parameters = array()) {
-        $this->form_tag();
-        if (!array_key_exists('action', $parameters)) $parameters['action'] = $action;
-        echo $this->form_parameters($parameters);
+    function form_open($action = 'save', $post_parameters = array(), $html_attributes = array() ) {
+        $this->form_tag($html_attributes);
+        if (!array_key_exists('action', $post_parameters)) $post_parameters['action'] = $action;
+        echo $this->create_hidden_fields($post_parameters);
     } // function form
 
 
     /**
      * Prints opening form tag.
+     * 
+     * The optional argument lets you overwrite the default html attributes of the form tag. The defaults are:
+     * - action: $this->base_url
+     * - method: 'post'
+     * - name:   $this->model_name
+     * - class:  'mform'
      *
+     * @param  array        $html_attributes Array of attributes to include in form tag (optional)
      * @return void
      */
-    function form_tag() {
-        echo "<form action='$this->base_url' method='post' name='{$this->model_name}' class='mform'>";
+    function form_tag( $html_attributes = array() ) {
+        if (!array_key_exists('action', $html_attributes)) $html_attributes['action'] = $this->base_url;
+        if (!array_key_exists('method', $html_attributes)) $html_attributes['method'] = 'post';
+        if (!array_key_exists('name', $html_attributes)) $html_attributes['name'] = $this->model_name;
+        if (!array_key_exists('class', $html_attributes)) $html_attributes['class'] = 'mform';
+        echo "<form {$this->create_html_attributes($html_attributes)}>";
     } // function form_tag
+
+
+    function create_html_attributes($attributes) {
+        if (! is_array($attributes) || !count($attributes) ) return "";
+        $pairs = array();
+        foreach($attributes as $name => $value) {
+            $pairs[] = "{$name}='{$value}'";
+        }
+        return join(' ', $pairs);
+    } // function create_html_attributes
 
 
     /**

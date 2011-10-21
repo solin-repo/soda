@@ -378,7 +378,7 @@ class controller {
      * @param  array  $parameters  Associative array to be transformed in hidden input fields (optional)
      * @return string              Returns a string of html hidden input fields
      */
-    function form_parameters($parameters = array() ) {
+    function create_hidden_fields($parameters = array() ) {
         global $id;
         if (! array_key_exists('controller', $parameters) ) $parameters['controller'] = $this->model_name;
         if (! array_key_exists('id', $parameters) ) $parameters['id'] = $id;
@@ -388,7 +388,7 @@ class controller {
             $inputs[] = "<input type='hidden' value='$value' name='$key' id='$key'/>";
         }
         return join("\n", $inputs);
-    } // function form_parameters
+    } // function create_hidden_fields
 
 
     /**
