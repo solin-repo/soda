@@ -44,16 +44,21 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																												
+																																																				
 												<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#create_html_attributes" title="details" class="method-name">create_html_attributes</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$attributes</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#form_open" title="details" class="method-name">form_open</a>
-											([<span class="var-type">string</span>&nbsp;<span class="var-name">$action</span> = <span class="var-default">'save'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span> = <span class="var-default">array()</span>])
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$action</span> = <span class="var-default">'save'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$post_parameters</span> = <span class="var-default">array()</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$html_attributes</span> = <span class="var-default">array()</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#form_tag" title="details" class="method-name">form_tag</a>
-										()
+											([<span class="var-type">array</span>&nbsp;<span class="var-name">$html_attributes</span> = <span class="var-default">array()</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">Returns</span>
@@ -86,24 +91,49 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 
-<a name="methodform_open" id="form_open"><!-- --></a>
+<a name="methodcreate_html_attributes" id="create_html_attributes"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">form_open</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a107">107</a></span>)
+		<span class="method-title">create_html_attributes</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a142">142</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			create_html_attributes
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$attributes</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$attributes</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodform_open" id="form_open"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">form_open</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a114">114</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Prints opening form tag and hidden form fields to specify the destination of a form post.</p>
-<p class="description"><p>If you do not specify the action parameter, the form post will be handled by the default 'save' method of  the current controller.  You can also specify additional parameters to change the default behavior of the form post. Example:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><a href="../Soda/helper.html#methodform_open">form_open</a><span class="src-sym">(</span><span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'controller'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'some_alternative_controller'</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol></div></p></p>
+<p class="description"><p>If you do not specify the action as part of the post parameters, the form post will be  handled by the default 'save' method of the current controller.  You can also specify additional post parameters to change the default behavior of the form post. Example:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><a href="../Soda/helper.html#methodform_open">form_open</a><span class="src-sym">(</span><span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-var">$post_parameters&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'controller'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'some_alternative_controller'</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>The third argument lets you overwrite the default html attributes of the form tag. The defaults are: <ul><li>action: $this-&gt;base_url</li><li>method: 'post'</li><li>name:   $this-&gt;model_name</li><li>class:  'mform'</li></ul></p></p>
 	
 	<div class="method-signature">
 		<span class="method-result">void</span>
 		<span class="method-name">
 			form_open
 		</span>
-					([<span class="var-type">string</span>&nbsp;<span class="var-name">$action</span> = <span class="var-default">'save'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span> = <span class="var-default">array()</span>])
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$action</span> = <span class="var-default">'save'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$post_parameters</span> = <span class="var-default">array()</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$html_attributes</span> = <span class="var-default">array()</span>])
 			</div>
 	
 			<ul class="parameters">
@@ -112,37 +142,46 @@
 				<span class="var-name">$action</span><span class="var-description">: Controller method to handle the form post, defaults to 'save' (optional)</span>			</li>
 					<li>
 				<span class="var-type">array</span>
-				<span class="var-name">$parameters</span><span class="var-description">: Array of variables to submit through hidden form fields (optional)</span>			</li>
+				<span class="var-name">$post_parameters</span><span class="var-description">: Array of variables to submit through hidden form fields (optional)</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$html_attributes</span><span class="var-description">: Array of attributes to include in form tag (optional)</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodform_tag" id="form_tag"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">form_tag</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a119">119</a></span>)
+		<span class="method-title">form_tag</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a133">133</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Prints opening form tag.</p>
+<p class="description"><p>The optional argument lets you overwrite the default html attributes of the form tag. The defaults are: <ul><li>action: $this-&gt;base_url</li><li>method: 'post'</li><li>name:   $this-&gt;model_name</li><li>class:  'mform'</li></ul></p></p>
 	
 	<div class="method-signature">
 		<span class="method-result">void</span>
 		<span class="method-name">
 			form_tag
 		</span>
-				()
+					([<span class="var-type">array</span>&nbsp;<span class="var-name">$html_attributes</span> = <span class="var-default">array()</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$html_attributes</span><span class="var-description">: Array of attributes to include in form tag (optional)</span>			</li>
+				</ul>
 		
 			
 	</div>
 <a name="methodget_partial_path" id="get_partial_path"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_partial_path</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a133">133</a></span>)
+		<span class="method-title">get_partial_path</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a161">161</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -169,7 +208,7 @@
 			
 	</div>
 <a name="method__call" id="__call"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">__call</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a51">51</a></span>)
@@ -202,7 +241,7 @@
 			
 	</div>
 <a name="method__get" id="__get"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">__get</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a81">81</a></span>)
@@ -243,7 +282,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 21 Oct 2011 09:18:26 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Fri, 21 Oct 2011 10:53:25 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
