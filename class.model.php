@@ -552,11 +552,11 @@ class model {
 
 
     /**
-     * Returns all objects from $collection which have the variable $property
+     * Returns all values for the property $property from $collection
      *
      * @param  string     $property     Name of the property we are looking for
      * @param  array      $collection   Array of items to search through
-     * @return array                    Returns an array of objects or an empty array
+     * @return array                    Returns an array of property values or an empty array
      */
     public static function collect($property, $collection) {
         return array_map(function($item) use ($property) { 
