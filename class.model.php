@@ -98,7 +98,7 @@ class model {
      *
      * @param string $where_clause      SQL where clause: use without the WHERE keyword (optional)
      * @param array  $include           class names of associated models to include (optional)
-     * @return object                   Returns object or false
+     * @return object                   Returns object or null if no object was found or false upon error
      */
     public static function load($where_clause = false, $include = false) {
         if (!$objects = static::load_all($where_clause, $include, $limitfrom = -1, $limitnum = 1)) return false;
@@ -291,7 +291,7 @@ class model {
         while ($row = $recordset->FetchRow()) {
             $objects[] = new $class_name($row);
         }   
-        if ($include) $objects = self::load_associations($objects, $include);
+        if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
     } // function load_all
 
@@ -361,7 +361,7 @@ class model {
         foreach(static::$finder_signatures as $signature) {
             if (strpos($method, $signature) !== false) {
                 $caller = "call_{$signature}";
-                return self::$caller($method, $args);
+                return static::$caller($method, $args);
             }
         }
         throw new Exception("Unknown method [$method]");
@@ -377,7 +377,7 @@ class model {
      */
     public static function call_delete_all($method, $args) {
         $property_names = static::extract_properties( substr($method, strlen('delete_all_by_')) );
-        return self::delete_all(static::build_where_clause($property_names, $args));               
+        return static::delete_all(static::build_where_clause($property_names, $args));               
     } // function call_delete
 
 
@@ -471,9 +471,9 @@ class model {
      */
     public static function finder($method, $args, $finder_name, $loader_name) {
         $property_names = static::extract_properties( substr($method, strlen($loader_name . '_by_')) );
-        if (!isset($args[count($property_names)])) return self::$loader_name(static::build_where_clause($property_names, $args));
+        if (!isset($args[count($property_names)])) return static::$loader_name(static::build_where_clause($property_names, $args));
         $properties = static::map_properties_to_values($property_names, $args);
-        return self::$finder_name(function($item) use($properties) { 
+        return static::$finder_name(function($item) use($properties) { 
             foreach($properties as $property_name => $value) {
                 if ( (!isset($item->$property_name)) || $item->$property_name != $value) return false;
             }
@@ -533,7 +533,7 @@ class model {
     public static function loader($method, $args, $loader_name) {
         $property_names = static::extract_properties( substr($method, strlen($loader_name . '_by_')) );
         $include = (isset($args[count($property_names)])) ? $args[count($property_names)] : false;
-        return self::$loader_name(static::build_where_clause($property_names, $args), $include);               
+        return static::$loader_name(static::build_where_clause($property_names, $args), $include);               
     } // function loader
 
 
