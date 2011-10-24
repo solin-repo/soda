@@ -273,7 +273,7 @@ class model {
      * Please note that there's also a 'singular' version of this function: model::load.
      * 
      *
-     * @param array  $where_clause      SQL where clause: use without the WHERE keyword (optional)
+     * @param string $where_clause      SQL where clause: use without the WHERE keyword (optional)
      * @param array  $include           Class names of associated models to include (optional)
      * @param int    $limitfrom         Return a subset of records, starting at this point (optional, required if $limitnum is set).
      * @param int    $limitnum          Return a subset comprising this many records (optional, required if $limitfrom is set).
