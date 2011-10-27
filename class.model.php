@@ -29,6 +29,8 @@
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
+// Help with Moodle 2.x migration:  http://docs.moodle.org/dev/DB_layer_2.0_migration_docs  
+   
 /**
  * A model object usually corresponds to exactly one database record. All columns 
  * are made available as object properties pointing to their corresponding database values (if any).
@@ -96,10 +98,11 @@ class model {
      *
      * @param string $where_clause      SQL where clause: use without the WHERE keyword (optional)
      * @param array  $include           class names of associated models to include (optional)
+     * @param array  $params            Array of sql parameters (optional)
      * @return object                   Returns object or null if no object was found or false upon error
      */
-    public static function load($where_clause = false, $include = false) {
-        if (!$objects = static::load_all($where_clause, $include, $limitfrom = -1, $limitnum = 1)) return false;
+    public static function load($where_clause = false, $include = false, $params = null) {
+        if (!$objects = static::load_all($where_clause, $include, $params, $limitfrom = -1, $limitnum = 1)) return false;
         return array_shift($objects);
     } // function load
 
@@ -321,18 +324,21 @@ class model {
      *
      * @param string $where_clause      SQL where clause: use without the WHERE keyword (optional)
      * @param array  $include           Class names of associated models to include (optional)
+     * @param array  $params            Array of sql parameters (optional)
      * @param int    $limitfrom         Return a subset of records, starting at this point (optional, required if $limitnum is set).
      * @param int    $limitnum          Return a subset comprising this many records (optional, required if $limitfrom is set).
      * @return array
      */
-    public static function load_all($where_clause = false, $include = false, $limitfrom = null, $limitnum = null) {
-        global $CFG;
+    public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
+        global $CFG, $DB;
         $where = ($where_clause) ? "WHERE $where_clause " : "";
-        if (! $recordset = get_recordset_sql("SELECT *
-                                              FROM {$CFG->prefix}" . static::$table_name . " 
-                                              $where",
-                                              $limitfrom, $limitnum) ) return;
+        if (! $recordset = $DB->get_recordset_sql("SELECT *
+                                                   FROM {$CFG->prefix}" . static::$table_name . " 
+                                                   $where",
+                                                   $params,
+                                                   $limitfrom, $limitnum) ) return;
         $objects = static::convert_to_objects($recordset);
+        $recordset->close();
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
     } // function load_all
@@ -341,9 +347,9 @@ class model {
     public static function convert_to_objects($recordset, $class_name = false) {
         if (! $class_name) $class_name = get_called_class();
         $objects = array();
-        while ($row = $recordset->FetchRow()) {
-            $objects[] = new $class_name($row);
-        }   
+        foreach ($recordset as $record) {
+            $objects[] = new $class_name($record);
+        }
         return $objects;
     } // function convert_to_objects
 
@@ -370,7 +376,7 @@ class model {
 
 
     function attach_properties($properties = false) {
-        if ($properties && is_array($properties)) {
+        if ($properties && (is_array($properties) || (is_object($properties))) ) {
             foreach($properties as $key => $value) {
                 $this->$key = $value;
             }
@@ -439,11 +445,12 @@ class model {
      *
      * @param  string       $method Name of the method to call dynamically
      * @param  array        $args   Array of values for the columns mentioned in the where clause
-     * @return mixed                Returns ADODB RecordSet object, or false if an error occured.
+     * @return mixed                Returns true upon succes, or false if an error occured.
      */
     public static function call_delete_all($method, $args) {
         $property_names = static::extract_properties( substr($method, strlen('delete_all_by_')) );
-        return static::delete_all(static::build_where_clause($property_names, $args));               
+        $params = static::create_params_array($property_names, $args);
+        return static::delete_all(static::build_params_clause($property_names), $params);               
     } // function call_delete
 
 
@@ -452,14 +459,18 @@ class model {
      * Please note: there is a 'singular' version for this method model#delete
      *
      * @param  string       $where_clause SQL where clause (optional)
-     * @return mixed                      Returns ADODB RecordSet object, or false if an error occured.
+     * @param  array        $params       Array of sql parameters (optional)
+     * @return mixed                      Returns true upon success or false if an error occured.
      */
-    public static function delete_all($where_clause = false) {
+    public static function delete_all($where_clause = false, $params = null) {
         global $CFG;
         $where = ($where_clause) ? "WHERE $where_clause " : "";
-        return get_recordset_sql("DELETE
-                                  FROM {$CFG->prefix}" . static::$table_name . " 
-                                  $where");
+        if (! $recordset = $DB->get_recordset_sql("DELETE
+                                                   FROM {$CFG->prefix}" . static::$table_name . " 
+                                                   $where",
+                                                   $params)) return false;
+        $recordset->close();
+        return true;
     } // function delete_all
 
 
@@ -537,7 +548,10 @@ class model {
      */
     public static function finder($method, $args, $finder_name, $loader_name) {
         $property_names = static::extract_properties( substr($method, strlen($loader_name . '_by_')) );
-        if (!isset($args[count($property_names)])) return static::$loader_name(static::build_where_clause($property_names, $args));
+        if (!isset($args[count($property_names)])) {
+            $params = static::create_params_array($property_names, $args);
+            return static::$loader_name(static::build_params_clause($property_names), false, $params);
+        }
         $properties = static::map_properties_to_values($property_names, $args);
         return static::$finder_name(function($item) use($properties) { 
             foreach($properties as $property_name => $value) {
@@ -549,23 +563,33 @@ class model {
 
 
     /**
-     * Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values
+     * Constructs an SQL WHERE clause out of an associative array of column names pointing to corresponding values
      *
-     * @param  array        $properties     Array of column names. If the $args parameter is not provided, 
-     *                                      $properties is assumed to be an associative array: a column name pointing
-     *                                      to a value.
-     * @param  array        $args           Array of values for the columns. If not provided, the parameter $properties
-     *                                      must contain the values (optional) 
+     * @param  array        $properties         Associative array of column names pointing to values.
      * @return string                       Returns a string containing a WHERE clause
      */
-    public static function build_where_clause($properties, $args = false) {
+    public static function build_where_clause($properties) {
         $where_parts = array();
-        $columns = (! $args) ? $properties : static::map_properties_to_values($properties, $args);
-        foreach($columns as $property => $value) {
-            $where_parts[] = "$property = '$value'";
-        }               
+        foreach($properties as $column => $value) {
+            $where_parts[] = "$column = '$value'";
+        }
         return join(' AND ', $where_parts);
     } // function build_where_clause
+
+
+    /**
+     * Constructs a partial SQL WHERE clause out of an array of column names
+     *
+     * @param  array        $params         Array of column names
+     * @return string                       Returns a string containing a partial WHERE clause
+     */
+    public static function build_params_clause($params) {
+        $where_parts = array();
+        foreach($params as $column) {
+            $where_parts[] = "$column = :$column";
+        }
+        return join(' AND ', $where_parts);
+    } // function build_params_clause
 
 
     /**
@@ -603,8 +627,14 @@ class model {
     public static function loader($method, $args, $loader_name) {
         $property_names = static::extract_properties( substr($method, strlen($loader_name . '_by_')) );
         $include = (isset($args[count($property_names)])) ? $args[count($property_names)] : false;
-        return static::$loader_name(static::build_where_clause($property_names, $args), $include);               
+        $params = static::create_params_array($property_names, $args);
+        return static::$loader_name(static::build_params_clause($property_names), $include, $params);               
     } // function loader
+
+
+    public static function create_params_array($property_names, $args) {
+        return static::map_properties_to_values($property_names, array_slice($args, 0, count($property_names)) );
+    } // function create_params_array
 
 
     /**
@@ -768,15 +798,16 @@ class model {
      * @return integer  Returns the record id of the object upon success, otherwise false
      */
     function save_without_validation($record_id = false) {
+        global $DB;
         $class = get_class($this);
         $this->timemodified = time();
         if ($record_id || (property_exists($this, 'id') && $this->id && $this->id != '') ) {
             if ($record_id) $this->id = $record_id;
-            if (!update_record($class::$table_name, $this)) return false;
+            if (!$DB->update_record($class::$table_name, $this)) return false;
             return $this->id;
         }
         $this->timecreated = time();
-        return $this->id = insert_record($class::$table_name, $this);               
+        return $this->id = $DB->insert_record($class::$table_name, $this);               
     } // function save_without_validation
 
 

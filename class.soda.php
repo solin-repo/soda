@@ -131,9 +131,11 @@ class soda {
      */
     function dispatch($action) {
         $mod_name = get_called_class();
-        global $CFG, ${$mod_name};
+        global $CFG, ${$mod_name}, $PAGE, $soda_module_name, $cm;
 
         $controller = optional_param('controller', $mod_name, PARAM_RAW);
+
+
 
         $general_helper = $this->get_helper($mod_name);
         $specific_helper  = $this->get_helper($mod_name, $controller);
@@ -186,7 +188,13 @@ class soda {
      * @return  void
      */
     function add_layout_and_dispatch($action) {
-        global $CFG;
+        $mod_name = get_called_class();
+        global $CFG, $cm, $PAGE, $soda_module_name, ${$mod_name}, $course;
+
+        // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
+        //                           require_login() or $PAGE->set_context(). The page may not display correctly 
+        //                           as a result"  
+        require_course_login($course);
 
         ob_start(); // Start output buffering
         $this->dispatch($action);
@@ -197,6 +205,9 @@ class soda {
             echo $content;
             return;
         }
+        $PAGE->set_url("/mod/$soda_module_name/index.php", array('id' => $cm->id, 'action' => $action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
+        $PAGE->set_pagelayout('admin');
+
         $header = $this->get_header(get_called_class());
 
         echo $header;
@@ -225,12 +236,15 @@ class soda {
      * @return  string              Returns Moodle layout header
      */
     function get_header($mod_name) {
-        global $cm, $course, $CFG;
+        global $cm, $course, $CFG, $OUTPUT;
         ob_start(); // Start output buffering
         $str_mod_name_singular = get_string('modulename', $mod_name);
+        /*
         $navigation = build_navigation( get_string('modulename', $mod_name) );
         print_header_simple(format_string($mod_name), "", $navigation, "", "", true,
                             update_module_button($cm->id, $course->id, $str_mod_name_singular), navmenu($course, $cm));               
+         */
+        echo $OUTPUT->header();
         echo "<script src='{$CFG->wwwroot}/mod/soda/lib.js' type='text/javascript'></script>";
         $header = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
@@ -245,8 +259,9 @@ class soda {
      * @return  string              Returns Moodle layout footer
      */
     function print_footer($mod_name) {
-        global $course;
-        print_footer($course);
+        global $course, $OUTPUT;
+        //print_footer($course);
+        echo $OUTPUT->footer();
     } // function print_footer
 
 
@@ -310,23 +325,51 @@ class soda {
      ***************************************************************************************************************/
 
     static function add_instance($mod_instance) {
-        return insert_record(get_called_class(), $mod_instance);
+        global $DB;
+
+        $mod_instance->timecreated = time();
+
+        # You may have to add extra stuff in here #
+
+        return $DB->insert_record(get_called_class(), $mod_instance);
     } // function add_instance
 
 
     static function update_instance($mod_instance) {
+        global $DB;
+
         $mod_instance->timemodified = time();
         $mod_instance->id = $mod_instance->instance;
-        return update_record(get_called_class(), $mod_instance);       
+
+        # You may have to add extra stuff in here #
+
+        return $DB->update_record(get_called_class(), $mod_instance);
     } // function update_instance
 
 
     static function delete_instance($id) {
-        return delete_records(get_called_class(), "id", "$id");
+        global $DB;
+
+        if (! $mod_instance = $DB->get_record(get_called_class(), array('id' => $id))) {
+            return false;
+        }
+
+        # Delete any dependent records here #
+
+        $DB->delete_records(get_called_class(), array('id' => $mod_instance->id));
+
+        return true;
     } // function delete_instance
 
 
-    static function user_outline($course, $user, $mod, $mod_instance) { return true; }
+    static function user_outline($course, $user, $mod, $mod_instance) { 
+        $return = new stdClass;
+        $return->time = 0;
+        $return->info = '';
+        return $return;
+    } // function user_outline
+
+
     static function user_complete($course, $user, $mod, $planner) { return true; }
     static function print_recent_activity($course, $isteacher, $timestart) { return false; }
     static function cron() { return true; }
@@ -334,6 +377,23 @@ class soda {
     static function get_participants($mod_id) { return false; }
     static function scale_used($mod_id, $scale_id) { return false; }
 
+    /**
+     * Checks if scale is being used by any instance of newmodule.
+     * This function was added in 1.9
+     *
+     * This is used to find out if scale used anywhere
+     * @param $scaleid int
+     * @return boolean True if the scale is used by any newmodule
+     */
+    static function scale_used_anywhere($scaleid) {
+        global $DB;
+
+        if ($scaleid and $DB->record_exists(get_called_class(), 'grade', -$scaleid)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     static function get_navigation() {
         global $course;
@@ -345,36 +405,39 @@ class soda {
 
 
     static function get_module_instance() { 
-        global $course, $cm, $id;
+        global $course, $cm, $id, $DB;
         
         $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
         $a  = optional_param('a', 0, PARAM_INT);  // planner ID
 
         if ($id) {
-            if (! $cm = get_record("course_modules", "id", $id)) { error("Course Module ID was incorrect"); }
-            if (! $course = get_record("course", "id", $cm->course)) { error("Course is misconfigured"); }
-            if (! $mod_instance = get_record(get_called_class(), "id", $cm->instance)) { error("Course module is incorrect"); }
+            $cm         = get_coursemodule_from_id(get_called_class(), $id, 0, false, MUST_EXIST);
+            $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+            $mod_instance  = $DB->get_record(get_called_class(), array('id' => $cm->instance), '*', MUST_EXIST);
+        } elseif ($n) {
+            $mod_instance  = $DB->get_record(get_called_class(), array('id' => $n), '*', MUST_EXIST);
+            $course     = $DB->get_record('course', array('id' => $mod_instance->course), '*', MUST_EXIST);
+            $cm         = get_coursemodule_from_instance(get_called_class(), $mod_instance->id, $course->id, false, MUST_EXIST);
         } else {
-            if (! $mod_instance = get_record(get_called_class(), "id", $a)) { error("Course module is incorrect"); }
-            if (! $course = get_record("course", "id", $mod_instance->course)) { error("Course is misconfigured"); }
-            if (! $cm = get_coursemodule_from_instance("planner", $mod_instance->id, $course->id)) { error("Course Module ID was incorrect"); }
+            error('You must specify a course_module ID or an instance ID');
         }
         return $mod_instance;
     } // function get_module_instance
 
 
     static function get_mod_by_id($mod_id) {
-        return get_record(get_called_class(), "id", $mod_id);
+        global $DB;
+        return $DB->get_record(get_called_class(), array("id" => $mod_id) );
     }
 
 
     static function set_variables($mod_name) {
-        global $cm, $id, $course, $context;
+        global $cm, $id, $course, $context, $DB;
         if (! $cm = get_coursemodule_from_id($mod_name, $id)) {
             error("Course Module ID was incorrect");
         }
 
-        if (! $course = get_record("course", "id", $cm->course)) {
+        if (! $course = $DB->get_record("course", array("id" => $cm->course) )) {
             error("Course is misconfigured");
         } 
         
