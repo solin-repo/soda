@@ -59,9 +59,7 @@ class model {
      * @return object
      */
     function __construct($properties) {
-        foreach($properties as $key => $value) {
-            $this->$key = $value;
-        }               
+        $this->attach_properties($properties);
         $this->define_validation_rules();
     } // function __construct
 
@@ -132,6 +130,15 @@ class model {
      *
      * If you don't specify your own plural version, Soda will simply use an 's' postfix to pluralize.
      *
+     * Finally, if the $associations parameter contains a key which points to an object, the properties
+     * of this object will be used to impose constraints on the retrieved associated objects. Technically,
+     * the object's properties will be used to create an additional sql clause. Example:
+     *
+     * <code>
+     * $authors = author::load_all_by_publisher( 'Penguin', $include = array('book' => (object) array('year' => 1972)) );
+     * </code>
+     *
+     *
      * @param array  $objects       Parent objects to attach the associated models to
      * @param array  $associations  Class names of the associated models to be loaded
      * @return array
@@ -140,6 +147,16 @@ class model {
         global $CFG, $soda_module_name;
         $model_name = get_called_class();
         foreach($associations as $parent_model => $child_model) {
+            // check for is_object is just a dirty trick to use this function in multiple ways
+            if (is_object($child_model)) {
+                include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
+                $children = $parent_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")
+                    AND " . static::build_where_clause((array) $child_model)
+                );
+                $objects = static::attach_associations($objects, $children);
+                continue;
+            }
+
             if (is_string($parent_model)) {
                 include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
                 $parents = $parent_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")");
@@ -154,6 +171,30 @@ class model {
         }
         return $objects;
     } // function load_associations
+
+
+
+    public static function load_association_through($objects, $association, $through) {
+        global $CFG, $soda_module_name;
+        $model_name = get_called_class();
+        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association}.php");
+        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$through}.php");
+
+        $through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" );
+        $association_objects = $association::load_all("id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+
+        $association_name = $association::plural();
+        $model_id_name = $model_name . '_id';
+        $association_id_name = $association . '_id';
+
+        foreach($objects as $object) {
+            foreach($through_objects as $through_object) {
+                if ($object->id != $through_object->$model_id_name) continue;
+                $selected[] = $association::find_by_id($through_object->$association_id_name, $association_objects);
+            }
+            $object->$association_name = $selected;
+        }
+    } // function load_association_through
 
 
     /**
@@ -193,12 +234,10 @@ class model {
     public static function attach_associations($objects, $children, $association_name = false) {
         if ( (!is_array($objects)) || (!count($objects)) ) return false;
         if ( (!is_array($children)) || (!count($children)) ) return false;
-        $keys = array_keys($objects);
-        if (is_array($objects[$keys[0]]) ) $objects = static::flatten($objects);
+        if (is_array(static::get_first($objects)) ) $objects = static::flatten($objects);
         $model_name = get_called_class();
         $finder = "find_all_by_{$model_name}_id";
-        $keys = array_keys($children);
-        $child_model = get_class($children[$keys[0]]);
+        $child_model = get_class(static::get_first($children));
         if (!$association_name) $association_name = $child_model::plural();
         if ($association_name == $child_model) $finder = "find_by_{$model_name}_id";
         foreach($objects as $object) {
@@ -210,6 +249,14 @@ class model {
         }
         return $objects;
     } // function attach_associations 
+
+
+
+
+    public static function get_first($collection) {
+        $keys = array_keys($collection);
+        return $collection[$keys[0]];
+    } // function get_first
 
 
     /**
@@ -241,8 +288,7 @@ class model {
     public static function associative_load($associated_collection, $association_name = false) {
         if ( (!is_array($associated_collection)) || (!count($associated_collection)) ) return false;
         $model_name = get_called_class();
-        $keys = array_keys($associated_collection);
-        $child_model = get_class($associated_collection[$keys[0]]);
+        $child_model = get_class(static::get_first($associated_collection));
         $objects = $model_name::load_all( "id IN (" . join(',', array_unique($child_model::collect($model_name . '_id', $associated_collection)) ) .")" );
         return $model_name::attach_associations($objects, $associated_collection, $association_name);
     } // function associative_load
@@ -286,14 +332,20 @@ class model {
                                               FROM {$CFG->prefix}" . static::$table_name . " 
                                               $where",
                                               $limitfrom, $limitnum) ) return;
-        $objects = array();
-        $class_name = get_called_class();
-        while ($row = $recordset->FetchRow()) {
-            $objects[] = new $class_name($row);
-        }   
+        $objects = static::convert_to_objects($recordset);
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
     } // function load_all
+
+
+    public static function convert_to_objects($recordset, $class_name = false) {
+        if (! $class_name) $class_name = get_called_class();
+        $objects = array();
+        while ($row = $recordset->FetchRow()) {
+            $objects[] = new $class_name($row);
+        }   
+        return $objects;
+    } // function convert_to_objects
 
 
     /**
@@ -303,16 +355,27 @@ class model {
      * are still saved.
      *
      * @param array     $objects      Objects to save
+     * @param array     $constants    Constants to attach to each object as a property before saving (optional)
      * @return boolean                Returns true if all objects were valid, otherwise false 
      */
-    public static function save_all($objects) {
-        if ( !isset($objects) || !is_array($objects) || !count($objects) )return true;
+    public static function save_all($objects, $constants = false) {
+        if ( !isset($objects) || !is_array($objects) || !count($objects) ) return true;
         $valid = true;
         foreach($objects as $object) {
+            $object->attach_properties($constants);
             $valid = $valid && $object->save();
         }
         return $valid;
     } // function save_all
+
+
+    function attach_properties($properties = false) {
+        if ($properties && is_array($properties)) {
+            foreach($properties as $key => $value) {
+                $this->$key = $value;
+            }
+        }               
+    } // function attach_properties
 
 
     /**
@@ -320,13 +383,16 @@ class model {
      * This function is typically used to convert form post data into a collection of objects.
      *
      * @param array     $properties_collection      Array of property arrays (key value pairs)
+     * @param array     $constants                  Constants to attach to each object as a property before saving (optional)
      * @return array                                Returns objects
      */
-    public static function instantiate_all($properties_collection) {
+    public static function instantiate_all($properties_collection, $constants = false) {
         $class = get_called_class();
         $objects = array();
         foreach($properties_collection as $properties) {
-            $objects[] = new $class($properties);
+            $object = new $class($properties);
+            $object->attach_properties($constants);
+            $objects[] = $object;
         }
         return $objects;
     } // function 
@@ -485,13 +551,17 @@ class model {
     /**
      * Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values
      *
-     * @param  array        $property_names Name of the method to call dynamically
-     * @param  array        $args           Array of values for the columns
+     * @param  array        $properties     Array of column names. If the $args parameter is not provided, 
+     *                                      $properties is assumed to be an associative array: a column name pointing
+     *                                      to a value.
+     * @param  array        $args           Array of values for the columns. If not provided, the parameter $properties
+     *                                      must contain the values (optional) 
      * @return string                       Returns a string containing a WHERE clause
      */
-    public static function build_where_clause($property_names, $args) {
+    public static function build_where_clause($properties, $args = false) {
         $where_parts = array();
-        foreach(static::map_properties_to_values($property_names, $args) as $property => $value) {
+        $columns = (! $args) ? $properties : static::map_properties_to_values($properties, $args);
+        foreach($columns as $property => $value) {
             $where_parts[] = "$property = '$value'";
         }               
         return join(' AND ', $where_parts);
@@ -650,6 +720,7 @@ class model {
             ${$property} = $value;
         }
         $valid = true;
+        if (!isset($this->validation_rules) || !count($this->validation_rules) ) return true;
         foreach($this->validation_rules as $rule) {
             $code = $rule['code'];
             if ( !$code(${$rule['field']}) ) {
