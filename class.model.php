@@ -59,9 +59,7 @@ class model {
      * @return object
      */
     function __construct($properties) {
-        foreach($properties as $key => $value) {
-            $this->$key = $value;
-        }               
+        $this->attach_properties($properties);
         $this->define_validation_rules();
     } // function __construct
 
@@ -303,16 +301,27 @@ class model {
      * are still saved.
      *
      * @param array     $objects      Objects to save
+     * @param array     $constants    Constants to attach to each object as a property before saving (optional)
      * @return boolean                Returns true if all objects were valid, otherwise false 
      */
-    public static function save_all($objects) {
-        if ( !isset($objects) || !is_array($objects) || !count($objects) )return true;
+    public static function save_all($objects, $constants = false) {
+        if ( !isset($objects) || !is_array($objects) || !count($objects) ) return true;
         $valid = true;
         foreach($objects as $object) {
+            $object->attach_properties($constants);
             $valid = $valid && $object->save();
         }
         return $valid;
     } // function save_all
+
+
+    function attach_properties($properties = false) {
+        if ($properties && is_array($properties)) {
+            foreach($properties as $key => $value) {
+                $this->$key = $value;
+            }
+        }               
+    } // function attach_properties
 
 
     /**
@@ -320,13 +329,16 @@ class model {
      * This function is typically used to convert form post data into a collection of objects.
      *
      * @param array     $properties_collection      Array of property arrays (key value pairs)
+     * @param array     $constants                  Constants to attach to each object as a property before saving (optional)
      * @return array                                Returns objects
      */
-    public static function instantiate_all($properties_collection) {
+    public static function instantiate_all($properties_collection, $constants = false) {
         $class = get_called_class();
         $objects = array();
         foreach($properties_collection as $properties) {
-            $objects[] = new $class($properties);
+            $object = new $class($properties);
+            $object->attach_properties($constants);
+            $objects[] = $object;
         }
         return $objects;
     } // function 
@@ -650,6 +662,7 @@ class model {
             ${$property} = $value;
         }
         $valid = true;
+        if (!isset($this->validation_rules) || !count($this->validation_rules) ) return true;
         foreach($this->validation_rules as $rule) {
             $code = $rule['code'];
             if ( !$code(${$rule['field']}) ) {
