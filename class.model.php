@@ -191,6 +191,7 @@ class model {
         $association_id_name = $association . '_id';
 
         foreach($objects as $object) {
+            $selected = array();
             foreach($through_objects as $through_object) {
                 if ($object->id != $through_object->$model_id_name) continue;
                 $selected[] = $association::find_by_id($through_object->$association_id_name, $association_objects);
