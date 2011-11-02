@@ -98,11 +98,10 @@ class soda_error {
     
     /**
      * Returns the first error of the given object and field.
-     * If you omit the field, this function will return the first error for the entire object. If there are
-     * no errors, the function returns false.
+     * If there are no errors, the function returns false.
      *
      * @param   object  $object     Soda model
-     * @param   string  $field      Field
+     * @param   string  $field      Name of the field
      * @return  boolean             Returns the first error if there is one, otherwise false
      */
     static function get_first_error($object, $field) {

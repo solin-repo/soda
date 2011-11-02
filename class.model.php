@@ -149,6 +149,7 @@ class model {
         foreach($associations as $parent_model => $child_model) {
             // check for is_object is just a dirty trick to use this function in multiple ways
             if (is_object($child_model)) {
+                // Information in object is used to compose a restricting where clause (select a subset)
                 include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
                 $children = $parent_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")
                     AND " . static::build_where_clause((array) $child_model)
@@ -182,12 +183,14 @@ class model {
 
         $through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" );
         $association_objects = $association::load_all("id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+        //exit(print_object($through_objects));
 
         $association_name = $association::plural();
         $model_id_name = $model_name . '_id';
         $association_id_name = $association . '_id';
 
         foreach($objects as $object) {
+            $selected = array();
             foreach($through_objects as $through_object) {
                 if ($object->id != $through_object->$model_id_name) continue;
                 $selected[] = $association::find_by_id($through_object->$association_id_name, $association_objects);
