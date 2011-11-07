@@ -119,19 +119,6 @@ class helper {
 
 
     /**
-     * Prints the string that belongs to the field. If it doesn't exist in the global language file it will be
-     * taken from the module language file.
-     *
-     * @param   string      $field          Field name to be looked up in the language files (required)
-     * @return  string
-     */
-    function get_string($field) {
-        global $soda_module_name;
-        return (get_string($field) == "[[$field]]") ? get_string($field, $soda_module_name) : get_string($field);
-    } // function get_string
-
-
-    /**
      * Prints opening form tag.
      * 
      * The optional argument lets you overwrite the default html attributes of the form tag. The defaults are:
