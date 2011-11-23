@@ -58,7 +58,7 @@ class model {
      * @param array  $properties  Properties and their values to populate the model with
      * @return object
      */
-    function __construct($properties) {
+    function __construct($properties = false) {
         $this->attach_properties($properties);
         $this->define_validation_rules();
     } // function __construct
