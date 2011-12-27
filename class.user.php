@@ -9,11 +9,11 @@ class user extends model {
      * It returns an array with both the unhashed
      * password as the hashed password.
      * @param  int  $length  Length of the password (default = 8)
+     * @param  string  $allowed_characters  Characters that shall be allowed in the password (default = 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ)
      * @return  array(password => hashed_password)
      */
-	function create_password($length = 8) {
+	function create_password($length = 8, $allowed_characters = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ") {
 
-		$allowed_characters = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
 		$password = '';
 		
 		for($i = 0; $i < $length; $i ++)
