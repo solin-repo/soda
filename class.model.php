@@ -49,7 +49,12 @@ class model {
         'load',
         'delete_all'
     );
-
+    // directives for the loader method
+    static $directives = array(
+        'scope',
+        'through'
+    );
+    static $table_relations = false;
 
     /**
      * Instantiates model class with an array of property-value pairs. 
@@ -58,7 +63,7 @@ class model {
      * @param array  $properties  Properties and their values to populate the model with
      * @return object
      */
-    function __construct($properties = false) {
+    function __construct($properties) {
         $this->attach_properties($properties);
         $this->define_validation_rules();
     } // function __construct
@@ -145,37 +150,156 @@ class model {
      */
     public static function load_associations($objects, $associations) {
         global $CFG, $soda_module_name;
+        if (static::no_more_associations_to_load($associations)) return $objects;
         $model_name = get_called_class();
         foreach($associations as $parent_model => $child_model) {
-            // check for is_object is just a dirty trick to use this function in multiple ways
-            if (is_object($child_model)) {
-                // Information in object is used to compose a restricting where clause (select a subset)
-                include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
-                $children = $parent_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")
-                    AND " . static::build_where_clause((array) $child_model)
-                );
-                $objects = static::attach_associations($objects, $children);
+            if ( (is_string($parent_model)) && (strstr($parent_model, ':')) ) continue;
+            if ($directive = static::get_directive($child_model)) {
+                $method = "call_{$directive}";
+                static::$method( $objects, $parent_model, $child_model );
                 continue;
             }
-
             if (is_string($parent_model)) {
                 include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
-                $parents = $parent_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")");
+                // This should actually be done through the model class settings of the association class,
+                // not as a parameter in the 'load' function call
+                $foreign_key = static::construct_foreign_key($parent_model);
+                $parents = $parent_model::load_all("{$foreign_key} IN (" . join(',', static::collect('id', $objects)) .  ")");
                 if (!is_array($child_model)) $child_model = array($child_model);
                 $parents = $parent_model::load_associations($parents, $child_model);
-                static::attach_associations($objects, $parents);
+                static::attach_associations($objects, $parents, false, $foreign_key);
                 continue;
             }
             include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$child_model}.php");
-            $children = $child_model::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")");
-            $objects = static::attach_associations($objects, $children);
+            $foreign_key = static::construct_foreign_key($child_model);
+            $children = $child_model::load_all("{$foreign_key} IN (" . join(',', static::collect('id', $objects)) .  ")");
+            $objects = static::attach_associations($objects, $children, false, $foreign_key);
         }
         return $objects;
     } // function load_associations
 
 
+    /**
+     * See if the associations array contains anything besides 'directives'
+     *
+     * @param array    $associations     Array of 'directives' or association names
+     * @return boolean                   Returns false if any of the keys is not a 'directive', otherwise true
+     */
+    public static function no_more_associations_to_load($associations) {
+        foreach($associations as $key => $value) {
+            if ( !strstr($key, ':') )  return false;
+        }
+        return true;
+    } // function no_more_associations_to_load
 
-    public static function load_association_through($objects, $association, $through) {
+
+    /**
+     * Creates and executes an sql 'where clause' to restrict the set of associated items.
+     *
+     * @param array  $objects           Array of 'parent' objects
+     * @param string $association_model Name of the associated model
+     * @param array  $child_model       Array of 'directives', including the actual scope
+     * @return array                    Returns array of loaded and attached associated objects
+     */
+    public static function call_scope($objects, $association_model, $child_model) {
+        global $CFG, $soda_module_name;
+
+        //$restrictions = static::get_first($child_model[':scope']);
+        $restrictions = $child_model[':scope'];
+        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association_model}.php");
+        $order = (isset($child_model[':order'])) ? " ORDER BY {$child_model[':order']} " : "";
+        $association_name = (isset($child_model[':association_name'])) ? $child_model[':association_name'] : false;
+        $foreign_key = static::construct_foreign_key($association_model);
+        $children = $association_model::load_all("{$foreign_key} IN (" . join(',', static::collect('id', $objects)) .  ")
+            AND " . static::build_where_clause($restrictions) . $order
+        );
+        return $objects = static::attach_associations($objects, $children, $association_name, $foreign_key);
+    } // function call_scope
+
+
+    /**
+     * Looks up the static property table_relations to see if there is a relationship
+     * with $association_model which includes a foreign key specification.
+     *
+     * @param string $association_model Name of the associated model
+     * @return string                   Returns the foreign key or false
+     */
+    public static function find_foreign_key_for($association_model) {
+        if (! $relations = static::$table_relations) return false;
+        $keys = array_keys($relations);
+        if (! is_array($relations[$keys[0]]) ) $relations = array($relations);
+        foreach($relations as $relation) {
+            if (!array_key_exists(':foreign_key', $relation)) continue;
+            if (array_key_exists($association_model, array_flip($relation))) return $relation[':foreign_key'];
+        }               
+        return false;
+    } // function find_foreign_key_for
+
+
+    /**
+     * Looks up the foreign key of the currenct model used in $association_model or 
+     * returns the name of the current model affixed with '_id'.
+     *
+     * @param string $association_model Name of the associated model
+     * @return string                   Returns the foreign key
+     */
+    public static function construct_foreign_key($association_model) {
+        //exit(print_object($association_model));
+        $model_name = get_called_class();
+        if ($foreign_key = static::find_foreign_key_for($association_model)) return $foreign_key;
+        // search both ends of the relationship
+        if ($foreign_key = $association_model::find_foreign_key_for($model_name)) return $foreign_key;
+        return "{$model_name}_id";
+    } // function construct_foreign_key
+
+
+    /**
+     * Loads objects of $child_model if they appear in $association_model together with
+     * an object out of $objects.
+     * Please note: this is primarily a wrapper function for load_association_through.
+     * TODO: does not seem to be used anywhere. Delete?
+     *
+     * @param array  $objects           Array of objects for which to find the associated models
+     * @param string $association_model Name of the association model
+     * @param array  $child_model       Array containing 'directives' and the name of the child model
+     * @return void
+     */
+    public static function call_through($objects, $association_model, $child_model) {
+        global $CFG, $soda_module_name;
+        $through_model = static::get_first($child_model);
+        $model_name = get_called_class();
+        $order = (isset($child_model[':order'])) ? $child_model[':order'] : false;
+        $model_name::load_association_through( $objects,  $association_model, $through_model, $order);
+    } // function call_through
+
+
+    /**
+     * Extracts 'directive' out of $child_model array.
+     *
+     * @param array   $child_model  Array containing 'directives' or the name of the child model
+     * @return string               Returns directive or false if none was found
+     */   
+    public static function get_directive($child_model) {
+        if (!is_array($child_model)) return false;        
+        foreach($child_model as $key => $value) {
+            if (!strstr($key, ':')) continue;
+            if (in_array(substr($key, 1), static::$directives) ) return substr($key, 1);
+        }
+        return false;
+    } // function get_directive
+
+
+    /**
+     * Loads associated models by if they appear in an association table together with
+     * an object out of $objects.
+     *
+     * @param array  $objects     Array of objects for which to find the associated models
+     * @param string $association Name of the association model
+     * @param string $through     Name of the combining model (i.e. the association table)
+     * @param string $order       Property by which to sort the associated object
+     * @return void
+     */
+    public static function load_association_through($objects, $association, $through, $order = false) {
         global $CFG, $soda_module_name;
         $model_name = get_called_class();
         include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association}.php");
@@ -196,8 +320,69 @@ class model {
                 $selected[] = $association::find_by_id($through_object->$association_id_name, $association_objects);
             }
             $object->$association_name = $selected;
+            static::sort_by($object->$association_name, $order);
         }
     } // function load_association_through
+
+
+    /**
+     * Sorts an array of objects by a property or method.
+     *
+     * @param array  $objects            Array of objects to sort
+     * @param string $property_or_method Name of the property or method to sort by
+     * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
+     * @return array                     Returns sorted array
+     */
+    public static function sort_by(&$objects, $property_or_method, $order = "ASC") {
+        if (! $property_or_method) return;
+        $keys = array_keys($objects);
+        if (! count($keys) ) return $objects;
+        $obj = $objects[$keys[0]];
+
+        if (property_exists($obj, $property_or_method)) return static::sort_by_property($objects, $property_or_method, $order);
+        if (method_exists($obj, $property_or_method)) return static::sort_by_method($objects, $property_or_method, $order);
+    } // function sort_by
+
+
+    /**
+     * Sorts an array of objects by a property
+     *
+     * @param array  $objects            Array of objects to sort
+     * @param string $property           Name of the property to sort by
+     * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
+     * @return array                     Returns sorted array
+     */
+    public static function sort_by_property(&$objects, $property, $order) {
+        return usort($objects, function($a, $b) use ($property, $order) {
+            if ($a->$property == $b->$property ) return 0;
+            if ($order == 'ASC') {
+                return ($a->$property < $b->$property) ? -1 : 1;
+            } else {
+                return ($a->$property > $b->$property) ? -1 : 1;
+            }
+        });               
+    } // function sort_by_property
+
+
+    /**
+     * Sorts an array of objects by a method, i.e. by comparing the output of the called method.
+     *
+     * @param array  $objects            Array of objects to sort
+     * @param string $method             Name of the method to sort by
+     * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
+     * @return array                     Returns sorted array
+     */
+    public static function sort_by_method(&$objects, $method, $order) {
+        return usort($objects, function($a, $b) use ($method, $order) {
+            if ($a->$method() == $b->$method() ) return 0;
+            if ($order == 'ASC') {
+                return ($a->$method() < $b->$method()) ? -1 : 1;
+            } else {
+                return ($a->$method() > $b->$method()) ? -1 : 1;
+            }
+        });               
+    } // function sort_by_method
+
 
 
     /**
@@ -234,28 +419,33 @@ class model {
      * @param string $association_name  Name of the parent's property for the associated objects (optional)
      * @return array
      */
-    public static function attach_associations($objects, $children, $association_name = false) {
+    public static function attach_associations($objects, $children, $association_name = false, $foreign_key = false) {
         if ( (!is_array($objects)) || (!count($objects)) ) return false;
         if ( (!is_array($children)) || (!count($children)) ) return false;
         if (is_array(static::get_first($objects)) ) $objects = static::flatten($objects);
         $model_name = get_called_class();
-        $finder = "find_all_by_{$model_name}_id";
+        $foreign_key = ($foreign_key) ? $foreign_key : $model_name . '_id';
+        $finder = "find_all_by_{$foreign_key}";
         $child_model = get_class(static::get_first($children));
         if (!$association_name) $association_name = $child_model::plural();
-        if ($association_name == $child_model) $finder = "find_by_{$model_name}_id";
+        if ($association_name == $child_model) $finder = "find_by_{$foreign_key}";
         foreach($objects as $object) {
             $object->$association_name = $child_model::$finder($object->id, $children);
         }               
-        $parent_id = $model_name . '_id';
         foreach($children as $child) {
-            $child->$model_name = $model_name::find_by_id($child->$parent_id, $objects);
+            $child->$model_name = $model_name::find_by_id($child->$foreign_key, $objects);
         }
         return $objects;
     } // function attach_associations 
 
 
 
-
+    /**
+     * Returns first element of an array
+     *
+     * @param array  $collection         Array of items
+     * @return mixed                     Returns first item of array
+     */
     public static function get_first($collection) {
         $keys = array_keys($collection);
         return $collection[$keys[0]];
@@ -334,13 +524,20 @@ class model {
         if (! $recordset = get_recordset_sql("SELECT *
                                               FROM {$CFG->prefix}" . static::$table_name . " 
                                               $where",
-                                              $limitfrom, $limitnum) ) return;
-        $objects = static::convert_to_objects($recordset);
+                                              $limitfrom, $limitnum) ) return array();
+        if (! count( $objects = static::convert_to_objects($recordset) )) return array();
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
     } // function load_all
 
 
+    /**
+     * Converts a record set to an array of objects of the called class.
+     *
+     * @param recordset $recordset    Record set
+     * @param string    $class_name   Name of the class to convert to (optional, defaults to called class)
+     * @return array                  Returns array of objects
+     */
     public static function convert_to_objects($recordset, $class_name = false) {
         if (! $class_name) $class_name = get_called_class();
         $objects = array();
@@ -372,6 +569,12 @@ class model {
     } // function save_all
 
 
+    /**
+     * Adds key - value pairs to objects as properties and their values.
+     *
+     * @param recordset $properties   Array of properties and corresponding values
+     * @return void
+     */
     function attach_properties($properties = false) {
         if ($properties && is_array($properties)) {
             foreach($properties as $key => $value) {
@@ -564,6 +767,7 @@ class model {
     public static function build_where_clause($properties, $args = false) {
         $where_parts = array();
         $columns = (! $args) ? $properties : static::map_properties_to_values($properties, $args);
+        if (! is_array($columns) ) return '';
         foreach($columns as $property => $value) {
             $where_parts[] = "$property = '$value'";
         }               

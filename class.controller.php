@@ -69,9 +69,10 @@ class controller {
      * @return void
      */
     function __construct($mod_name, $mod_instance_id, $action = false) {
-        global $USER;
+        global $USER, $course, $compass;
+        $this->course = $course;
         $this->mod_name = $mod_name;
-        $this->model_name = substr(get_called_class(), 0, strrpos(get_called_class(), "_")); 
+        $this->model_name = static::model_name(get_called_class()); 
         $this->base_url = $this->create_base_url();
         $instance_id_name = "{$this->mod_name}_id";
         $this->action = ($action) ? $action : optional_param('action', 'index', PARAM_RAW);
@@ -80,6 +81,11 @@ class controller {
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
 
     } // function __construct
+
+
+    public static function model_name($controller_name) {
+        return substr($controller_name, 0, strrpos($controller_name, "_"));
+    } // function model_name
 
 
     /**
@@ -190,10 +196,11 @@ class controller {
      * @param  array        $user             User to check capability for, defaults to currently logged in user (optional)
      * @return boolean                        Returns true if user has capability, otherwise false
      */
-    function check_capability($capability_short = 'edit', $user = false) {
+    function check_capability($capability_short = 'edit', $model_name = false, $user = false) {
         global $context, $USER;
         if (!$user) $user = $USER;
-        return has_capability("mod/{$this->mod_name}:$capability_short{$this->model_name}", $context, $user->id); 
+        $model_name = ($model_name !== false ) ? $model_name : $this->model_name;
+        return has_capability("mod/{$this->mod_name}:$capability_short{$model_name}", $context, $user->id); 
     } // function check_capability
 
 
@@ -300,6 +307,7 @@ class controller {
      * You can also provide an associative array as the first argument. The keys in this array will made available
      * in the view as local variables holding the corresponding values from the array.
      * Please note that all instance variables of the controller will also be available in the view.
+     * If the view cannot be found, the views directory for the current controller's parent will be searched.
      *
      * @param  array  $data_array Associative array with variable names pointing to corresponding values (optional)
      * @param  string $view       View to include, defaults to view with same name as current action (optional)
@@ -315,6 +323,10 @@ class controller {
         $trace = debug_backtrace();
         $this->view = ($view) ? $view : $trace[1]['function'];
         $view_path = "{$CFG->dirroot}/mod/{$this->mod_name}/views/{$this->model_name}/{$this->view}.html";
+        if (! file_exists($view_path)) {
+            $parent_views = static::model_name(get_parent_class($this));
+            $view_path = "{$CFG->dirroot}/mod/{$this->mod_name}/views/{$parent_views}/{$this->view}.html";
+        }
         $template_path = "{$CFG->dirroot}/mod/$this->mod_name/views/template.html";
         if (file_exists($template_path)) {
             return include_once($template_path);
@@ -368,24 +380,29 @@ class controller {
     } // function create_base_url 
 
 
+    function start_url() {
+        global $id;
+        return $this->create_base_url() . "?id=$id";
+    } // function start_url
+
+
     /**
      * Creates a series of hidden input fields for inclusion in a form.
-     * If you omit the parameters array, the Soda action will be set to 'save'. Additionally, a controller and id
-     * hidden input field will be created. The default value for controller is the name of the current controller.
      * The id parameter is the Moodle module's instance id.
      *
      *
-     * @param  array  $parameters  Associative array to be transformed in hidden input fields (optional)
+     * @param  array  $parameters  Associative array to be transformed in hidden input fields
      * @return string              Returns a string of html hidden input fields
      */
-    function create_hidden_fields($parameters = array() ) {
+    function create_hidden_fields($parameters, $prefix = '', $no_id = false) {
         global $id;
-        if (! array_key_exists('controller', $parameters) ) $parameters['controller'] = $this->model_name;
-        if (! array_key_exists('id', $parameters) ) $parameters['id'] = $id;
-        if (! array_key_exists('action', $parameters)) $parameters['action'] = 'save';
+        $id_prefix = str_replace(']', '_', str_replace('[', '_', $prefix) );
         $inputs = array();
+        $parameters = $this->remove_collections_from_parameters($parameters);
         foreach($parameters as $key => $value) {
-            $inputs[] = "<input type='hidden' value='$value' name='$key' id='$key'/>";
+            $html_id = ($no_id) ?  "" : "id='{$id_prefix}$key'";
+            $key = ($prefix == '') ? $key : "[$key]";
+            $inputs[] = "<input type='hidden' value='$value' name='{$prefix}$key' $html_id />";
         }
         return join("\n", $inputs);
     } // function create_hidden_fields

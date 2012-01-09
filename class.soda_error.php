@@ -95,6 +95,11 @@ class soda_error {
         return true;
     } // function in_error
 
+
+    static function class_in_error($model_name) {
+        return isset(self::$validation_errors[$model_name]);
+    } // function class_in_error
+
     
     /**
      * Returns the first error of the given object and field.
