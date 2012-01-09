@@ -97,7 +97,12 @@
 										<a href="#load_file" title="details" class="method-name">load_file</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$controller_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$mod_name</span>)
 									</div>
-																																																																								
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#model_name" title="details" class="method-name">model_name</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$controller_name</span>)
+									</div>
+																																																																																
 												<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
@@ -116,7 +121,7 @@
 																<div class="method-definition">
 											<span class="method-result">boolean</span>
 										<a href="#check_capability" title="details" class="method-name">check_capability</a>
-											([<span class="var-type"></span>&nbsp;<span class="var-name">$capability_short</span> = <span class="var-default">'edit'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$user</span> = <span class="var-default">false</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$capibility_short</span>)
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$capability_short</span> = <span class="var-default">'edit'</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$model_name</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$user</span> = <span class="var-default">false</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$capibility_short</span>)
 									</div>
 																<div class="method-definition">
 											<span class="method-result">string</span>
@@ -126,7 +131,7 @@
 																<div class="method-definition">
 											<span class="method-result">string</span>
 										<a href="#create_hidden_fields" title="details" class="method-name">create_hidden_fields</a>
-											([<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span> = <span class="var-default">array()</span>])
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$prefix</span> = <span class="var-default">''</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$no_id</span> = <span class="var-default">false</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
@@ -158,7 +163,7 @@
 										<a href="#load" title="details" class="method-name">load</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$controller_name</span>)
 									</div>
-																								<div class="method-definition">
+																																<div class="method-definition">
 											<span class="method-result">string</span>
 										<a href="#post_to_url_js" title="details" class="method-name">post_to_url_js</a>
 											(<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$action</span> = <span class="var-default">'delete'</span>])
@@ -192,6 +197,11 @@
 											<span class="method-result">void</span>
 										<a href="#set_helpers" title="details" class="method-name">set_helpers</a>
 											(<span class="var-type">array</span>&nbsp;<span class="var-name">$helpers</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#start_url" title="details" class="method-name">start_url</a>
+										()
 									</div>
 																<div class="method-definition">
 											<span class="method-result">mixed</span>
@@ -360,7 +370,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method load_file</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a93">93</a></span>)
+		<span class="method-title">static method load_file</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a99">99</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -386,9 +396,38 @@
 		
 			
 	</div>
+<a name="methodmodel_name" id="model_name"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method model_name</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a86">86</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			model_name
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$controller_name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$controller_name</span>			</li>
+				</ul>
+		
+			
+	</div>
 
 <a name="method__construct" id="__construct"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a71">71</a></span>)
@@ -421,10 +460,10 @@
 			
 	</div>
 <a name="methodafter_action" id="after_action"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">after_action</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a132">132</a></span>)
+		<span class="method-title">after_action</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a138">138</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -448,10 +487,10 @@
 			
 	</div>
 <a name="methodbase_url" id="base_url"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">base_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a432">432</a></span>)
+		<span class="method-title">base_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a449">449</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -473,10 +512,10 @@
 			
 	</div>
 <a name="methodcheck_capability" id="check_capability"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">check_capability</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a193">193</a></span>)
+		<span class="method-title">check_capability</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a199">199</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -491,7 +530,7 @@
 		<span class="method-name">
 			check_capability
 		</span>
-					([<span class="var-type"></span>&nbsp;<span class="var-name">$capability_short</span> = <span class="var-default">'edit'</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$user</span> = <span class="var-default">false</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$capibility_short</span>)
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$capability_short</span> = <span class="var-default">'edit'</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$model_name</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$user</span> = <span class="var-default">false</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$capibility_short</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -504,15 +543,18 @@
 					<li>
 				<span class="var-type"></span>
 				<span class="var-name">$capability_short</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$model_name</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodcreate_base_url" id="create_base_url"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">create_base_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a365">365</a></span>)
+		<span class="method-title">create_base_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a377">377</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -533,15 +575,15 @@
 			
 	</div>
 <a name="methodcreate_hidden_fields" id="create_hidden_fields"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">create_hidden_fields</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a381">381</a></span>)
+		<span class="method-title">create_hidden_fields</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a397">397</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Creates a series of hidden input fields for inclusion in a form.</p>
-<p class="description"><p>If you omit the parameters array, the Soda action will be set to 'save'. Additionally, a controller and id  hidden input field will be created. The default value for controller is the name of the current controller.  The id parameter is the Moodle module's instance id.</p></p>
+<p class="description"><p>The id parameter is the Moodle module's instance id.</p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> Returns a string of html hidden input fields</li>
 			</ul>
@@ -551,22 +593,28 @@
 		<span class="method-name">
 			create_hidden_fields
 		</span>
-					([<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span> = <span class="var-default">array()</span>])
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$parameters</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$prefix</span> = <span class="var-default">''</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$no_id</span> = <span class="var-default">false</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type">array</span>
-				<span class="var-name">$parameters</span><span class="var-description">: Associative array to be transformed in hidden input fields (optional)</span>			</li>
+				<span class="var-name">$parameters</span><span class="var-description">: Associative array to be transformed in hidden input fields</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$prefix</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$no_id</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodcreate_messages" id="create_messages"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">create_messages</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a217">217</a></span>)
+		<span class="method-title">create_messages</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a224">224</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -590,10 +638,10 @@
 			
 	</div>
 <a name="methodcreate_querystring" id="create_querystring"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">create_querystring</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a352">352</a></span>)
+		<span class="method-title">create_querystring</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a364">364</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -620,10 +668,10 @@
 			
 	</div>
 <a name="methodget_url" id="get_url"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a339">339</a></span>)
+		<span class="method-title">get_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a351">351</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -653,15 +701,15 @@
 			
 	</div>
 <a name="methodget_view" id="get_view"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_view</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a308">308</a></span>)
+		<span class="method-title">get_view</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a316">316</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Includes a html file containing the view for the current action.</p>
-<p class="description"><p>If you specify the view parameter, that view will used instead of the default view.  You can also provide an associative array as the first argument. The keys in this array will made available  in the view as local variables holding the corresponding values from the array.  Please note that all instance variables of the controller will also be available in the view.</p></p>
+<p class="description"><p>If you specify the view parameter, that view will used instead of the default view.  You can also provide an associative array as the first argument. The keys in this array will made available  in the view as local variables holding the corresponding values from the array.  Please note that all instance variables of the controller will also be available in the view.  If the view cannot be found, the views directory for the current controller's parent will be searched.</p></p>
 	
 	<div class="method-signature">
 		<span class="method-result">void</span>
@@ -683,10 +731,10 @@
 			
 	</div>
 <a name="methodindex" id="index"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a180">180</a></span>)
+		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a186">186</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -705,10 +753,10 @@
 			
 	</div>
 <a name="methodload" id="load"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">load</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a110">110</a></span>)
+		<span class="method-title">load</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a116">116</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -732,10 +780,10 @@
 			
 	</div>
 <a name="methodpost_to_url_js" id="post_to_url_js"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">post_to_url_js</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a412">412</a></span>)
+		<span class="method-title">post_to_url_js</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a429">429</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -769,10 +817,10 @@
 			
 	</div>
 <a name="methodprint_message" id="print_message"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">print_message</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a233">233</a></span>)
+		<span class="method-title">print_message</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a240">240</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -802,10 +850,10 @@
 			
 	</div>
 <a name="methodredirect_to" id="redirect_to"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">redirect_to</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a259">259</a></span>)
+		<span class="method-title">redirect_to</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a266">266</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -837,10 +885,10 @@
 			
 	</div>
 <a name="methodredirect_to_url" id="redirect_to_url"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">redirect_to_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a274">274</a></span>)
+		<span class="method-title">redirect_to_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a281">281</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -864,10 +912,10 @@
 			
 	</div>
 <a name="methodremove_collections_from_parameters" id="remove_collections_from_parameters"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">remove_collections_from_parameters</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a287">287</a></span>)
+		<span class="method-title">remove_collections_from_parameters</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a294">294</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -894,10 +942,10 @@
 			
 	</div>
 <a name="methodrequire_login" id="require_login"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">require_login</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a205">205</a></span>)
+		<span class="method-title">require_login</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a212">212</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -915,10 +963,10 @@
 			
 	</div>
 <a name="methodset_helpers" id="set_helpers"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">set_helpers</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a143">143</a></span>)
+		<span class="method-title">set_helpers</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a149">149</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -940,11 +988,31 @@
 		
 			
 	</div>
+<a name="methodstart_url" id="start_url"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">start_url</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a383">383</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			start_url
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
 <a name="method__call" id="__call"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">__call</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a162">162</a></span>)
+		<span class="method-title">__call</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.controller.php.html#a168">168</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -979,7 +1047,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Mon, 24 Oct 2011 11:15:02 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Mon, 09 Jan 2012 17:16:43 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
