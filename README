@@ -16,7 +16,7 @@ logic and default Moodle code.
 In a Soda module, the business logic (validation rules and more) resides in a 
 model (or several, if your module is "about" more than one topic). The layout
 ends up in separate views. The flow of the application is handled by a 
-controller class (usuaylly one for each model class).
+controller class (usually one for each model class).
 
 Then end result is a more maintainable and extensible Moodle module.
 
@@ -25,4 +25,4 @@ Then end result is a more maintainable and extensible Moodle module.
 Copyright (C) 2011 Solin - www.solin.eu
 
 Programming and development:
-Onno Schuit (o.schuit[atoraround]solin.nl)
+Onno Schuit (o.schuit[at][or][around]solin.nl)
