@@ -21,6 +21,15 @@ controller class (usually one for each model class).
 Then end result is a more maintainable and extensible Moodle module.
 
 
+Please note: there are currently three branches:
+
+* master - always contains the Soda module for the most recent version of Moodle
+* moodle19 - Soda for Moodle 1.9
+* moodle21 - Soda for Moodle 2.1
+
+
+
+
 
 Copyright (C) 2011 Solin - www.solin.eu
 

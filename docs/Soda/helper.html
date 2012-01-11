@@ -95,7 +95,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">create_html_attributes</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a142">142</a></span>)
+		<span class="method-title">create_html_attributes</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a145">145</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -154,7 +154,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">form_tag</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a133">133</a></span>)
+		<span class="method-title">form_tag</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a136">136</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -181,12 +181,12 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_partial_path</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a161">161</a></span>)
+		<span class="method-title">get_partial_path</span> (line <span class="line-number"><a href="../__filesource/fsource_Soda__class.helper.php.html#a167">167</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Returns path to a partial view.</p>
-<p class="description"><p>A partial is a part of a view, typically reused in multiple places within the same view, or shared by multiple views.  The method will first lookup the most specific path, i.e. by looking in the views directory for the current model.  If the partial cannot be found there, the method will lookup the views/shared path.</p></p>
+<p class="description"><p>A partial is a part of a view, typically reused in multiple places within the same view, or shared by multiple views.  The method will first lookup the most specific path, i.e. by looking in the views directory for the current model.  If the partial cannot be found there, the method will lookup the views path of the related parent controller. The final  place to search is the views/shared path.</p><p>If the partial name contains a '/' it is assumed that full path is already specified.</p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> string</li>
 			</ul>
@@ -282,7 +282,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Mon, 24 Oct 2011 11:15:03 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Mon, 09 Jan 2012 17:16:44 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

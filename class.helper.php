@@ -112,8 +112,11 @@ class helper {
      * @return void
      */
     function form_open($action = 'save', $post_parameters = array(), $html_attributes = array() ) {
+        global $id;
         $this->form_tag($html_attributes);
-        if (!array_key_exists('action', $post_parameters)) $post_parameters['action'] = $action;
+        if (! array_key_exists('action', $post_parameters)) $post_parameters['action'] = $action;
+        if (! array_key_exists('controller', $post_parameters) ) $post_parameters['controller'] = $this->model_name;
+        if (! array_key_exists('id', $post_parameters) ) $post_parameters['id'] = $id;
         echo $this->create_hidden_fields($post_parameters);
     } // function form
 
@@ -153,7 +156,10 @@ class helper {
      * Returns path to a partial view.
      * A partial is a part of a view, typically reused in multiple places within the same view, or shared by multiple views.
      * The method will first lookup the most specific path, i.e. by looking in the views directory for the current model.
-     * If the partial cannot be found there, the method will lookup the views/shared path.
+     * If the partial cannot be found there, the method will lookup the views path of the related parent controller. The final
+     * place to search is the views/shared path.
+     *
+     * If the partial name contains a '/' it is assumed that full path is already specified.
      *
      * @param   string  $partial    Name of the partial
      * @return                      Returns string
@@ -161,8 +167,17 @@ class helper {
     function get_partial_path($partial) {
         global $CFG, $soda_module_name;
 
+        if (strpos($partial, '/') !== false) {
+            if (file_exists($partial)) {
+                return $partial;
+            }
+        }
         if (file_exists("{$CFG->dirroot}/mod/$soda_module_name/views/{$this->model_name}/_{$partial}.html")) {
             return "{$CFG->dirroot}/mod/$soda_module_name/views/{$this->model_name}/_{$partial}.html";
+        }
+        $parent_views = static::model_name(get_parent_class($this->controller));
+        if (file_exists("{$CFG->dirroot}/mod/$soda_module_name/views/{$parent_views}/_{$partial}.html")) {
+            return "{$CFG->dirroot}/mod/$soda_module_name/views/{$parent_views}/_{$partial}.html";
         }
         return "{$CFG->dirroot}/mod/$soda_module_name/views/shared/_{$partial}.html";
     } // function get_partial_path
