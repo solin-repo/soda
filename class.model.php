@@ -758,10 +758,10 @@ class model {
      * Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values
      *
      * @param  array        $properties     Array of column names. If the $args parameter is not provided, 
-     *                                      $properties is assumed to be an associative array: a column name pointing
-     *                                      to a value.
-     * @param  array        $args           Array of values for the columns. If not provided, the parameter $properties
-     *                                      must contain the values (optional) 
+     *                                      $properties is assumed to be an associative array: a column 
+     *                                      name pointing to a value.
+     * @param  array        $args           Array of values for the columns. If not provided, the parameter
+     *                                      $properties must contain the values (optional) 
      * @return string                       Returns a string containing a WHERE clause
      */
     public static function build_where_clause($properties, $args = false) {
