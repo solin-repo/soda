@@ -29,10 +29,10 @@
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
-include_once("{$CFG->dirroot}/mod/soda/class.controller.php");
-include_once("{$CFG->dirroot}/mod/soda/class.soda_error.php");
-include_once("{$CFG->dirroot}/mod/soda/class.model.php");
-include_once("{$CFG->dirroot}/mod/soda/class.helper.php");
+include_once("{$CFG->dirroot}/local/soda/class.controller.php");
+include_once("{$CFG->dirroot}/local/soda/class.soda_error.php");
+include_once("{$CFG->dirroot}/local/soda/class.model.php");
+include_once("{$CFG->dirroot}/local/soda/class.helper.php");
 
 /**
  * The Soda base class. If you instantiate this class, all default lib functions for 
@@ -70,7 +70,7 @@ include_once("{$CFG->dirroot}/mod/soda/class.helper.php");
  * class.compass.php, in turn, looks like this:
  * <code>
  *   # mod/compass/class.compass.php
- *   include_once("{$CFG->dirroot}/mod/soda/class.soda.php"); 
+ *   include_once("{$CFG->dirroot}/local/soda/class.soda.php"); 
  *   class compass extends soda {}
  * </code>
  *
@@ -245,7 +245,7 @@ class soda {
                             update_module_button($cm->id, $course->id, $str_mod_name_singular), navmenu($course, $cm));               
          */
         echo $OUTPUT->header();
-        echo "<script src='{$CFG->wwwroot}/mod/soda/lib.js' type='text/javascript'></script>";
+        echo "<script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>";
         $header = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
         return $header;
