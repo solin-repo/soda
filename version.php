@@ -34,5 +34,4 @@
  * @package Soda
  */
 $plugin->version  = 2012011201;
-$plugin->requires  = 20111102;
 ?>
