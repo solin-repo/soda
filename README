@@ -1,4 +1,4 @@
-Soda is a Moodle module to develop new modules. Soda does two things:
+Soda is a Moodle plugin to develop new modules. Soda does two things:
 
     - It constructs all your standard module functions dynamically: you don't 
       have to set up a complete lib.php file anymore for each new module.
@@ -28,6 +28,18 @@ Please note: there are currently three branches:
 * moodle21 - Soda for Moodle 2.1
 
 
+INSTALLATION
+
+Place the soda directory in your Moodle's "local" directory. E.g.: 
+
+moodle/local/soda
+public_html/local/soda
+
+
+USAGE
+
+Tutorial: http://tech.solin.eu/doku.php?id=moodle:using_soda_to_create_new_moodle_modules
+API documentation: http://soda-api.solin.eu
 
 
 
