@@ -456,41 +456,6 @@ class model {
 
 
     /**
-     * Loads a collection of parent objects by association with a collection of child objects.
-     * For each child object, this function will attempt to look for the associated
-     * parent object. The child objects are inserted into an appropriately named property
-     * of the parent object.
-     * Each child object will also be endowed with a property named after the class of the parent object.
-     * This property points to the parent object.
-     *
-     * Example: 
-     * <code>
-     * $authors = author::associative_load($books);
-     * </code>
-     *
-     * This will lookup all authors with the id $book->author_id and load them 
-     * as a collection of author objects.
-     *
-     * Each author object will be endowed with the collection of associated book objects:
-     * $author->books
-     *
-     * And each book object will be endowed with an author property, pointing to the author object:
-     * $book->author
-     *
-     * @param array $associated_collection  collection which contains objects with parent_ids 
-     * @param array $association_name       name for the property where the child objects will reside (optional)
-     * @return array
-     */
-    public static function associative_load($associated_collection, $association_name = false) {
-        if ( (!is_array($associated_collection)) || (!count($associated_collection)) ) return false;
-        $model_name = get_called_class();
-        $child_model = get_class(static::get_first($associated_collection));
-        $objects = $model_name::load_all( "id IN (" . join(',', array_unique($child_model::collect($model_name . '_id', $associated_collection)) ) .")" );
-        return $model_name::attach_associations($objects, $associated_collection, $association_name);
-    } // function associative_load
-
-
-    /**
      * Loads all objects of the table specified in model::$table_name
      * For example, if your model looks like this:
      * <code>
