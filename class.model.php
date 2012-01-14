@@ -176,7 +176,7 @@ class model {
             include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$child_model}.php");
             $foreign_key = static::construct_foreign_key($child_model);
             $children = $child_model::load_all("{$foreign_key} IN (" . join(',', static::collect('id', $objects)) .  ")");
-            $objects = static::attach_associations($objects, $children, false, $foreign_key);
+            static::attach_associations($objects, $children, false, $foreign_key);
         }
         return $objects;
     } // function load_associations
