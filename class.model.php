@@ -70,7 +70,18 @@ class model {
 
 
     /**
-     * Loads the first object of the table specified in model::$table_name.
+     * Returns table name associated with the model.
+     *
+     * @return string   Returns the table name
+     */
+    public static function table_name() {
+        if ( isset(static::$table_name) ) return static::$table_name;
+        return get_called_class();
+    } // function table_name
+
+
+    /**
+     * Loads the first object of the table as specified in model::table_name().
      * For example, if your model looks like this:
      * <code>
      * class user extends model {
@@ -453,7 +464,7 @@ class model {
 
 
     /**
-     * Loads all objects of the table specified in model::$table_name
+     * Loads all objects of the table as specified in model::table_name()
      * For example, if your model looks like this:
      * <code>
      * class user extends model {
@@ -487,7 +498,7 @@ class model {
         global $CFG;
         $where = ($where_clause) ? "WHERE $where_clause " : "";
         if (! $recordset = get_recordset_sql("SELECT *
-                                              FROM {$CFG->prefix}" . static::$table_name . " 
+                                              FROM {$CFG->prefix}" . static::table_name() . " 
                                               $where",
                                               $limitfrom, $limitnum) ) return array();
         if (! count( $objects = static::convert_to_objects($recordset) )) return array();
@@ -629,7 +640,7 @@ class model {
         global $CFG;
         $where = ($where_clause) ? "WHERE $where_clause " : "";
         return get_recordset_sql("DELETE
-                                  FROM {$CFG->prefix}" . static::$table_name . " 
+                                  FROM {$CFG->prefix}" . static::table_name() . " 
                                   $where");
     } // function delete_all
 
@@ -944,11 +955,11 @@ class model {
         $this->timemodified = time();
         if ($record_id || (property_exists($this, 'id') && $this->id && $this->id != '') ) {
             if ($record_id) $this->id = $record_id;
-            if (!update_record($class::$table_name, $this)) return false;
+            if (!update_record($class::table_name(), $this)) return false;
             return $this->id;
         }
         $this->timecreated = time();
-        return $this->id = insert_record($class::$table_name, $this);               
+        return $this->id = insert_record($class::table_name(), $this);               
     } // function save_without_validation
 
 
