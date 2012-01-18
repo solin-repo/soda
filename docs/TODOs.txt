@@ -4,3 +4,7 @@ TODOs
   messages when requests are from a specified ip address.
 
 - Generate warning if include fails at all levels.
+
+- Use naming scheme for helpers vs. getters. Example:
+  url() -- prints url immediately
+  get_url() -- get string containing url
