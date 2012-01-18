@@ -316,9 +316,9 @@ class controller {
     function get_view($data_array = array(), $view = false) {
         global $CFG, $id;
 
-        foreach($data_array as $variable_name => $value) {
-            $$variable_name = $value;
-        }
+		// extract variables from $data_array so we can access them as 'normal' php variables
+		extract($data_array);
+		
         //include correct view
         $trace = debug_backtrace();
         $this->view = ($view) ? $view : $trace[1]['function'];
