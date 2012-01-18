@@ -1,0 +1,6 @@
+TODOs
+
+- Implement debugging tool. Neat feature: ip address check - only show debugging 
+  messages when requests are from a specified ip address.
+
+- Generate warning if include fails at all levels.
