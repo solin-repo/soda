@@ -196,6 +196,10 @@ class soda {
         //                           as a result"  
         require_course_login($course);
 
+        $PAGE->set_url("/mod/$soda_module_name/index.php", array('id' => $cm->id, 'action' => $action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
+        $PAGE->set_pagelayout('admin');
+        $header = $this->get_header(get_called_class());
+
         ob_start(); // Start output buffering
         $this->dispatch($action);
         $content = ob_get_contents(); // Store buffer in variable
@@ -205,10 +209,6 @@ class soda {
             echo $content;
             return;
         }
-        $PAGE->set_url("/mod/$soda_module_name/index.php", array('id' => $cm->id, 'action' => $action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
-        $PAGE->set_pagelayout('admin');
-
-        $header = $this->get_header(get_called_class());
 
         echo $header;
         echo $content;
