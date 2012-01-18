@@ -135,8 +135,6 @@ class soda {
 
         $controller = optional_param('controller', $mod_name, PARAM_RAW);
 
-
-
         $general_helper = $this->get_helper($mod_name);
         $specific_helper  = $this->get_helper($mod_name, $controller);
 
@@ -195,6 +193,7 @@ class soda {
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
         require_course_login($course);
+
 
         $PAGE->set_url("/mod/$soda_module_name/index.php", array('id' => $cm->id, 'action' => $action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
         $PAGE->set_pagelayout('admin');
