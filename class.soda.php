@@ -127,15 +127,13 @@ class soda {
      * Finally, the after_action method is called on the controller.
      *
      * @param   string  $action Method to call on the target controller
-     * @return  void
+     * @return  controller
      */
     function dispatch($action) {
         $mod_name = get_called_class();
         global $CFG, ${$mod_name}, $PAGE, $soda_module_name, $cm;
 
         $controller = optional_param('controller', $mod_name, PARAM_RAW);
-
-
 
         $general_helper = $this->get_helper($mod_name);
         $specific_helper  = $this->get_helper($mod_name, $controller);
@@ -155,6 +153,9 @@ class soda {
         $instance->$action($record_id);               
         $this->redirect = $instance->redirect;
         $instance->after_action();
+        
+        // return instance after dispatch has been done
+        return $instance;
     } // function dispatch
 
 
@@ -197,7 +198,7 @@ class soda {
         require_course_login($course);
 
         ob_start(); // Start output buffering
-        $this->dispatch($action);
+        $controller = $this->dispatch($action);
         $content = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
 
@@ -205,10 +206,8 @@ class soda {
             echo $content;
             return;
         }
-        $PAGE->set_url("/mod/$soda_module_name/index.php", array('id' => $cm->id, 'action' => $action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
-        $PAGE->set_pagelayout('admin');
-
-        $header = $this->get_header(get_called_class());
+        // retrieve the stored moodle header from the controller
+        $header = $controller->get_moodle_header();
 
         echo $header;
         echo $content;

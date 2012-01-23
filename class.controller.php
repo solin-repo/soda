@@ -50,6 +50,7 @@ class controller {
     var $helpers = array();
     var $redirect = false;
     var $user;
+    protected $_moodle_header = '';
 
 
     /**
@@ -302,6 +303,37 @@ class controller {
 
 
     /**
+     * Creates Moodle layout header and stores it for 
+	 * later use (see class.soda.php->add_layout_and_dispatch() )
+     *
+     * @param   string  $mod_name   Name of the module
+     * @return  string              Returns Moodle layout header
+     */
+	protected function _prepare_moodle_header($mod_name) {
+        global $cm, $course, $CFG, $OUTPUT, $PAGE;
+
+        $PAGE->set_url("/mod/$mod_name/index.php", array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
+        $PAGE->set_pagelayout('admin');
+
+        ob_start(); // Start output buffering
+        $str_mod_name_singular = get_string('modulename', $mod_name);
+        /*
+        $navigation = build_navigation( get_string('modulename', $mod_name) );
+        print_header_simple(format_string($mod_name), "", $navigation, "", "", true,
+                            update_module_button($cm->id, $course->id, $str_mod_name_singular), navmenu($course, $cm));               
+         */
+        echo $OUTPUT->header();
+        echo "<script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>";
+        $header = ob_get_contents(); // Store buffer in variable
+        ob_end_clean(); // End buffering and clean up
+        $this->_moodle_header = $header;
+    } // function get_header
+
+	public function get_moodle_header() {
+		return $this->_moodle_header;
+	}
+		
+    /**
      * Includes a html file containing the view for the current action.
      * If you specify the view parameter, that view will used instead of the default view.
      * You can also provide an associative array as the first argument. The keys in this array will made available
@@ -315,6 +347,9 @@ class controller {
      */
     function get_view($data_array = array(), $view = false) {
         global $CFG, $id;
+        
+        // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
+        $this->_prepare_moodle_header($this->mod_name);
 
         foreach($data_array as $variable_name => $value) {
             $$variable_name = $value;
