@@ -148,8 +148,15 @@ class controller {
      * @return void
      */
     function set_helpers($helpers) {
+        $helper_set = false;
         foreach($helpers as $helper) {
             if (!$helper) continue;
+            $helper->controller = $this;
+            $this->helpers[] = $helper;
+            $helper_set = true;
+        }
+        if (! $helper_set ) {
+            $helper = new helper();
             $helper->controller = $this;
             $this->helpers[] = $helper;
         }
