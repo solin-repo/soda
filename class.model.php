@@ -854,6 +854,19 @@ class model {
 
 
     /**
+     * Adds single quotes to all words in a comma separated string.
+     *
+     * @param  string     $string     Comma separated string
+     * @return array                  Returns a comma separated string where each word is surrounded by quotes
+     */
+    public static function quotify($string) {
+        $string = explode( ',', $string);
+        $string = array_map(function($tag) { return trim($tag); }, $string);
+        return "'" . join( "', '", $string ) . "'";
+    } // function quotify
+
+
+    /**
      * Reduces a nested array to a flat array.
      * This method is typically used to merge multiple collections of objects into one array.
      *
