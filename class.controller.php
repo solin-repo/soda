@@ -371,7 +371,8 @@ class controller {
         }
         $template_path = "{$CFG->dirroot}/mod/$this->mod_name/views/template.html";
         if (file_exists($template_path)) {
-            return include_once($template_path);
+            include_once($template_path);
+            return;
         }
         include_once($view_path);
     } // function get_view
