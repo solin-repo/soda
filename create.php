@@ -1,7 +1,16 @@
+#!/usr/bin/php
 <?php
-#require_once("../../config.php");
+//require_once("../../config.php");
 
-$output = shell_exec( " cp -R template ../../mod/template 2>&1 " );
-echo $output
+if ($argc < 2) {
+    exit("Please specify a name for your new module\n");
+}
 
+$mod_name = $argv[1];
+$dir_dest = "../../mod/$mod_name";
+if (! shell_exec( " mkdir $dir_dest 2>&1") == null ) exit("Module $mod_name already exists!\n");
+echo shell_exec(" cp -r -a template/* $dir_dest 2>&1 " );
+echo shell_exec(" find $dir_dest -iname '*template*' -exec rename 's/template/$mod_name/i' {} + ");
+echo shell_exec(" find $dir_dest -exec sed -i -e 's/template/$mod_name/g' {} \; ");
+echo shell_exec(" find $dir_dest -exec sed -i -e 's/Template/$mod_name/g' {} \; ");
 ?>
