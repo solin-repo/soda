@@ -194,7 +194,11 @@ class controller {
      */
     function index() {
         $this->_prepare_moodle_header($this->mod_name);
-        echo "Please create a controller and a view of your own to get started.";
+        echo "<h1>Soda controller#index</h1>
+              <p>Please create a controller and a view of your own to get started.</p>
+              <p>Visit <a target='_blank' href='http://tech.solin.eu/doku.php?id=moodle:using_soda_to_create_new_moodle_modules'>tech.solin.eu</a>
+              to learn more about creating a Moodle module with Soda.</p>
+              <p>Soda's Application Programming Interface (API) can be found <a target='_blank' href='http://soda-api.solin.eu/'>here</a>.</p>";
     } // function index
 
 
