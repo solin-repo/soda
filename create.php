@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
-//require_once("../../config.php");
+define('CLI_SCRIPT', true);
+include("../../config.php");
+include("class.soda.php");
 
 if ($argc < 2) {
     exit("Please specify a name for your new module\n");
