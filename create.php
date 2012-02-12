@@ -11,6 +11,6 @@ $dir_dest = "../../mod/$mod_name";
 if (! shell_exec( " mkdir $dir_dest 2>&1") == null ) exit("Module $mod_name already exists!\n");
 echo shell_exec(" cp -r -a template/* $dir_dest 2>&1 " );
 echo shell_exec(" find $dir_dest -iname '*template*' -exec rename 's/template/$mod_name/i' {} + ");
-echo shell_exec(" find $dir_dest -exec sed -i -e 's/template/$mod_name/g' {} \; ");
-echo shell_exec(" find $dir_dest -exec sed -i -e 's/Template/$mod_name/g' {} \; ");
+shell_exec(" find $dir_dest -exec sed -i -e 's/template/$mod_name/g' {} \; 2>&1 ");
+shell_exec(" find $dir_dest -exec sed -i -e 's/Template/" . ucfirst($mod_name) . "/g' {} \; 2>&1 ");
 ?>

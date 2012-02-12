@@ -147,7 +147,8 @@ class controller {
      * @param  array  $helpers  Array of helper methods
      * @return void
      */
-    function set_helpers($helpers) {
+    function set_helpers($helpers = false) {        
+        if (!$helpers) return;
         $helper_set = false;
         foreach($helpers as $helper) {
             if (!$helper) continue;
@@ -192,7 +193,8 @@ class controller {
      * @return void
      */
     function index() {
-        echo "Please overwrite the Soda controller method 'index' with your own method.";
+        $this->_prepare_moodle_header($this->mod_name);
+        echo "Please create a controller and a view of your own to get started.";
     } // function index
 
 
@@ -334,7 +336,8 @@ class controller {
         $header = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
         $this->_moodle_header = $header;
-    } // function get_header
+    } // function _prepare_moodle_header 
+
 
 	public function get_moodle_header() {
 		return $this->_moodle_header;

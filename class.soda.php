@@ -134,14 +134,12 @@ class soda {
         global $CFG, ${$mod_name}, $PAGE, $soda_module_name, $cm;
 
         $controller = optional_param('controller', $mod_name, PARAM_RAW);
-
-        $general_helper = $this->get_helper($mod_name);
-        $specific_helper  = $this->get_helper($mod_name, $controller);
+        $helpers = array($this->get_helper($mod_name), $this->get_helper($mod_name, $controller));
 
         if (! controller::load_file($controller, $mod_name)) {
+            // no specific controller - let's fallback to default
             $instance = new controller($mod_name, ${$mod_name}->id, $action);
-            $instance->set_helpers(array($general_helper, $specific_helper));
-            return $instance->$action();
+            return $this->perform_action($instance, $action, $helpers);
         }
         $record_id = optional_param("{$controller}_id", false, PARAM_INT);
         if (file_exists("{$CFG->dirroot}/mod/$mod_name/models/{$controller}.php")) {
@@ -149,14 +147,29 @@ class soda {
         }
         $class = $controller . "_controller";
         $instance = new $class($mod_name, ${$mod_name}->id, $action);
-        $instance->set_helpers(array($general_helper, $specific_helper));
+        return $this->perform_action($instance, $action, $helpers, $record_id);
+    } // function dispatch
+
+
+    /**
+     * Initializes the controller by setting helpers, and performs the requested action.
+     * If no action was specified, the controller instance is returned immediately.
+     * Otherwise, the after_action code hook is handled.
+     *
+     * @param   object  $instance   Controller instance
+     * @param   string  $action     Name of the action or false
+     * @param   array   $helpers    Array of helper objects
+     * @param   integer $record_id  Id of record which the action is 'about' (optional)
+     * @return  object              Returns the controller instance object
+     */
+    function perform_action($instance, $action, $helpers, $record_id = false) {
+        $instance->set_helpers($helpers);
+        if (! $action ) return $instance;
         $instance->$action($record_id);               
         $this->redirect = $instance->redirect;
         $instance->after_action();
-        
-        // return instance after dispatch has been done
-        return $instance;
-    } // function dispatch
+        return $instance;               
+    } // function perform_action
 
 
     /**
