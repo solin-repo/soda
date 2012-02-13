@@ -27,6 +27,8 @@ if ( !empty($parsed_args['options']['skeleton']) ) {
         $file_dest = "../../mod/$mod_name/$dir/$model_name.php";
         shell_exec(" cp -a template/$dir/template.php $file_dest 2>&1 " );
     }
+    $dir_dest = "../../mod/$mod_name";
+    shell_exec(" find $dir_dest -exec sed -i -e 's/template/$model_name/g' {} \; 2>&1 ");
+    shell_exec(" find $dir_dest -exec sed -i -e 's/Template/" . ucfirst($model_name) . "/g' {} \; 2>&1 ");
 }
-exit(print_object($parsed_args));
 ?>
