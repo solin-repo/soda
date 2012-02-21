@@ -48,7 +48,7 @@ class controller {
     var $action;
     var $view;
     var $helpers = array();
-    var $redirect = false;
+    var $no_layout = false;
     var $user;
     protected $_moodle_header = '';
 
@@ -293,7 +293,7 @@ class controller {
      * @return void
      */
     function redirect_to_url($url) {
-        $this->redirect = true;
+        $this->no_layout = true;
         redirect($url);
     } // function redirect_to_url
 

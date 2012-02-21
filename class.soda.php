@@ -86,7 +86,7 @@ include_once("{$CFG->dirroot}/local/soda/class.helper.php");
  */
 class soda {
 
-    var $redirect = false;
+    var $no_layout = false;
 
     /**
      * Instantiates soda class and creates all standard Moodle module library functions.
@@ -166,7 +166,7 @@ class soda {
         $instance->set_helpers($helpers);
         if (! $action ) return $instance;
         $instance->$action($record_id);               
-        $this->redirect = $instance->redirect;
+        $this->no_layout = $instance->no_layout;
         $instance->after_action();
         return $instance;               
     } // function perform_action
@@ -235,7 +235,7 @@ class soda {
      * @return  boolean     Returns true if no layout is required, otherwise false
      */
     function no_layout_required() {
-        if ($this->redirect) return true;
+        if ($this->no_layout) return true;
         if (optional_param('no_layout', false, PARAM_RAW)) return true;
         return false;
     } // function no_layout_required
