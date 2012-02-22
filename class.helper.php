@@ -182,6 +182,8 @@ class helper {
         return "{$CFG->dirroot}/mod/$soda_module_name/views/shared/_{$partial}.html";
     } // function get_partial_path
 
+
+
 } // class helper
 
 ?>

@@ -336,7 +336,8 @@ class controller {
                             update_module_button($cm->id, $course->id, $str_mod_name_singular), navmenu($course, $cm));               
          */
         echo $OUTPUT->header();
-        echo "<script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>";
+        echo "<script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>
+              <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'></script>";
         $header = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
         $this->_moodle_header = $header;
