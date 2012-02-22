@@ -121,6 +121,32 @@ class helper {
     } // function form
 
 
+    function ajax_form( $html_attributes, $displayer) {
+        global $id;
+        if (! array_key_exists('id', $html_attributes) ) $html_attributes['id'] = "{$this->model_name}_$id";
+        echo $this->form_tag($html_attributes);
+        echo $displayer();
+        echo "</form>";
+        echo "<script type='text/javascript'>
+                  $(document).ready(
+                      function() {
+                          $('#{$html_attributes['id']}').submit(function() {
+                              $.post(
+                                  $('#{$html_attributes['id']}').attr('action'),
+                                  $('#{$html_attributes['id']}').serialize(),
+                                  function(data) { 
+                                      console.log(data); 
+                                      $('#todotwo_list').append(data);
+                                  }
+                              );
+                              return false;
+                          });
+                      }
+                  );
+              </script>";
+    } // function ajax_form
+
+
     /**
      * Prints opening form tag.
      * 

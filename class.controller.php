@@ -336,8 +336,8 @@ class controller {
                             update_module_button($cm->id, $course->id, $str_mod_name_singular), navmenu($course, $cm));               
          */
         echo $OUTPUT->header();
-        echo "<script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>
-              <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'></script>";
+        echo "<script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'></script>
+              <script src='{$CFG->wwwroot}/local/soda/lib.js' type='text/javascript'></script>";
         $header = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
         $this->_moodle_header = $header;
@@ -364,7 +364,7 @@ class controller {
         global $CFG, $id;
         
         // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
-        $this->_prepare_moodle_header($this->mod_name);
+        if (! $this->no_layout) $this->_prepare_moodle_header($this->mod_name);
 
         foreach($data_array as $variable_name => $value) {
             $$variable_name = $value;
