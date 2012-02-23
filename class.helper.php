@@ -202,16 +202,18 @@ class helper {
      * @param   string       $selector        jQuery type selector of the elements to be converted into ajax links (optional) default: 'a'
      * @param   string       $js_callback     Javascript callback function which is executed upon completion of the ajax request (optional)
      *                                        Please note that the original trigger object is made available in the variable 'trigger'
-     * @param   string       $url             Post url (destination of the ajax request)
+     * @param   string       $url             Post url, i.e. destination of the ajax request (optional), defaults to javascript 'this.href' 
+     *                                        (which means: the href attribute of the event trigger)
+     * @param   string       $event_type      Event which should trigger the ajax request (optional), defaults to 'click'
      * @return  void
      */
-    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false) {
+    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click') {
         $url = ($url) ? "'$url'" : "this.href";
         $success = ($js_callback) ? ", success: $js_callback" : "";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function () {
-                          $('#$container_id').on('click', '$selector', function() {
+                          $('#$container_id').on('$event_type', '$selector', function() {
                               var trigger = this;
                               $.ajax({
                                   type: 'POST',
