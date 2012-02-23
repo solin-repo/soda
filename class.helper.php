@@ -178,6 +178,55 @@ class helper {
 
 
     /**
+     * Converts all specified elements inside a container into ajax links.
+     * Clicking an ajax link results in a post to a specified url.
+     *
+     * By default, only 'a' elements are turned into ajax links. The post
+     * url is derived from the href attributes.
+     *
+     * Example:
+     * <code>
+     * <div id='todotwo_container'>
+     *   <ul id='todotwo_list'>
+     *      <li>My First Item <a href='?id=23&action=delete&controller=item&item_id=598'>delete</a></li>
+     *   </ul>
+     * </div>
+     * <?= $this->ajax_link($container_id = 'todotwo_container', "a.delete", "function() {\$(trigger).parent().remove();}"); ?>
+     * </code>
+     * 
+     * This code will turn all hyperlinks inside 'todotwo_container' into ajax links.
+     * If a user clicks the link, the 'li' item will be deleted.
+     * 
+     *
+     * @param   string       $container_id    Dom id of the element which contains the links
+     * @param   string       $selector        jQuery type selector of the elements to be converted into ajax links (optional) default: 'a'
+     * @param   string       $js_callback     Javascript callback function which is executed upon completion of the ajax request (optional)
+     *                                        Please note that the original trigger object is made available in the variable 'trigger'
+     * @param   string       $url             Post url (destination of the ajax request)
+     * @return  void
+     */
+    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false) {
+        $url = ($url) ? "'$url'" : "this.href";
+        $success = ($js_callback) ? ", success: $js_callback" : "";
+        echo "<script type='text/javascript'>
+                  $(document).ready(
+                      function () {
+                          $('#$container_id').on('click', '$selector', function() {
+                              var trigger = this;
+                              $.ajax({
+                                  type: 'POST',
+                                  url: $url
+                                  $success
+                              });
+                              return false;
+                          });
+                      }
+                  );
+              </script>";
+    } // function ajax_link
+
+
+    /**
      * Prints opening form tag.
      * 
      * The optional argument lets you overwrite the default html attributes of the form tag. The defaults are:
