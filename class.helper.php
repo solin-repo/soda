@@ -121,12 +121,45 @@ class helper {
     } // function form
 
 
-    function ajax_form( $html_attributes, $displayer) {
+    /**
+     * Prints opening and closing form tags, followed by javascript to do an 
+     * ajax post of the form.
+     * You should specify the body of the form by calling this function with an 
+     * anonymous function as the final argument ($displayer), which contains
+     * the actual html code to display.
+     *
+     * Example:
+     *
+     * <code>
+     * <h1>Items</h1>
+     * <ul id='todotwo_list'>
+     * <? 
+     * foreach($items as $item) { 
+     *     include($this->get_partial('single_item'));
+     * } ?>
+     * </ul>
+     * <?= $this->ajax_form(array('action' => $this->get_url('action=test')), 'append', '#todotwo_list', function() { ?>
+     *     <p>title: <input type="text" name="item[title]" value="" /><input type="submit" name="submit" value="Add"/></p>
+     * <? }); ?>
+     * </code>
+     *
+     * In this example, each 'title' is added to the unordered list as a list item (we are not showing
+     * the server side code for handling the ajax call here).
+     *
+     * @param  array        $html_attributes Array of attributes to include in form tag (optional)
+     * @param  string       $js_callback     Name of the javascript callback function to be called upon 'success'
+     * @param  string       $target          Target of the callback function (optional). If false, the $js_callback
+     *                                       argument may also contain the body of an anonymous javascript function definition.
+     * @param  function     $displayer       Anonymous function containing the code for displaying the body of the form        
+     * @return void
+     */
+    function ajax_form($html_attributes = array(), $js_callback, $target = false, $displayer) {
         global $id;
-        if (! array_key_exists('id', $html_attributes) ) $html_attributes['id'] = "{$this->model_name}_$id";
+        if (! array_key_exists('id', $html_attributes) ) $html_attributes['id'] = "{$this->mod_name}_$id";
         echo $this->form_tag($html_attributes);
         echo $displayer();
         echo "</form>";
+        $callback = ($target) ? "function(data) {{$js_callback}(data, '$target');}" : "function(data) {{$js_callback}}";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function() {
@@ -134,10 +167,7 @@ class helper {
                               $.post(
                                   $('#{$html_attributes['id']}').attr('action'),
                                   $('#{$html_attributes['id']}').serialize(),
-                                  function(data) { 
-                                      console.log(data); 
-                                      $('#todotwo_list').append(data);
-                                  }
+                                  $callback
                               );
                               return false;
                           });

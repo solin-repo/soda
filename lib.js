@@ -40,10 +40,11 @@ function post_to_url(path, params, method) {
         hiddenField.setAttribute("type", "hidden");
         hiddenField.setAttribute("name", key);
         hiddenField.setAttribute("value", params[key]);
-
         form.appendChild(hiddenField);
     }
 
     document.body.appendChild(form);
     form.submit();
 } // function post_to_url
+
+
