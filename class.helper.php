@@ -147,23 +147,28 @@ class helper {
      * the server side code for handling the ajax call here).
      *
      * @param  array        $html_attributes Array of attributes to include in form tag (optional)
+     * @param  string       $js_validate     Name of the javascript validation function (optional) - cancels submit if it returns false
      * @param  string       $js_callback     Name of the javascript callback function to be called upon 'success'
+     *                                       Please note that the original trigger object (i.e. the form) is made available in the variable 'trigger'
      * @param  string       $target          Target of the callback function (optional). If false, the $js_callback
      *                                       argument may also contain the body of an anonymous javascript function definition.
      * @param  function     $displayer       Anonymous function containing the code for displaying the body of the form        
      * @return void
      */
-    function ajax_form($html_attributes = array(), $js_callback, $target = false, $displayer) {
+    function ajax_form($html_attributes = array(), $js_validate = false, $js_callback, $target = false, $displayer) {
         global $id;
         if (! array_key_exists('id', $html_attributes) ) $html_attributes['id'] = "{$this->mod_name}_$id";
         echo $this->form_tag($html_attributes);
         echo $displayer();
         echo "</form>";
+        $validate = ($js_validate) ? "if (! $js_validate()) return false;" : "";
         $callback = ($target) ? "function(data) {{$js_callback}(data, '$target');}" : "function(data) {{$js_callback}}";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function() {
                           $('#{$html_attributes['id']}').submit(function() {
+                              var trigger = this;
+                              $validate
                               $.post(
                                   $('#{$html_attributes['id']}').attr('action'),
                                   $('#{$html_attributes['id']}').serialize(),
@@ -191,7 +196,7 @@ class helper {
      *      <li>My First Item <a href='?id=23&action=delete&controller=item&item_id=598'>delete</a></li>
      *   </ul>
      * </div>
-     * <?= $this->ajax_link($container_id = 'todotwo_container', "a.delete", "function() {\$(trigger).parent().remove();}"); ?>
+     * <?= $this->ajax_link($container_id = 'todotwo_container', "a.delete", "remove_item"); ?>
      * </code>
      * 
      * This code will turn all hyperlinks inside 'todotwo_container' into ajax links.
@@ -200,8 +205,8 @@ class helper {
      *
      * @param   string       $container_id    Dom id of the element which contains the links
      * @param   string       $selector        jQuery type selector of the elements to be converted into ajax links (optional) default: 'a'
-     * @param   string       $js_callback     Javascript callback function which is executed upon completion of the ajax request (optional)
-     *                                        Please note that the original trigger object is made available in the variable 'trigger'
+     * @param   string       $js_callback     Name of javascript callback function which is executed upon completion of the ajax request (optional)
+     *                                        The callback function is executed with 'data' and 'trigger' respectively as its parameters.
      * @param   string       $url             Post url, i.e. destination of the ajax request (optional), defaults to javascript 'this.href' 
      *                                        (which means: the href attribute of the event trigger)
      * @param   string       $event_type      Event which should trigger the ajax request (optional), defaults to 'click'
@@ -209,7 +214,7 @@ class helper {
      */
     function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click') {
         $url = ($url) ? "'$url'" : "this.href";
-        $success = ($js_callback) ? ", success: $js_callback" : "";
+        $success = ($js_callback) ? ", success: function(data) {{$js_callback}(data, trigger);}" : "";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function () {

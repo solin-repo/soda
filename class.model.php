@@ -638,21 +638,17 @@ class model {
 
     /**
      * Deletes all objects of this class from the database.
-     * Please note: there is a 'singular' version for this method model#delete
+     * Please note: there is a 'singular' version for this method model#delete, but it
+     * has a different behavior.
      *
-     * @param  string       $where_clause SQL where clause (optional)
+     * @param  string       $where_clause SQL where clause (optional) - will delete all if false!
      * @param  array        $params       Array of sql parameters (optional)
      * @return mixed                      Returns true upon success or false if an error occured.
      */
     public static function delete_all($where_clause = false, $params = null) {
-        global $CFG;
-        $where = ($where_clause) ? "WHERE $where_clause " : "";
-        if (! $recordset = $DB->get_recordset_sql("DELETE
-                                                   FROM {$CFG->prefix}" . static::table_name() . " 
-                                                   $where",
-                                                   $params)) return false;
-        $recordset->close();
-        return true;
+        global $DB;
+        $where = ($where_clause) ? "$where_clause" : "1=1";
+        return $DB->delete_records_select(static::table_name(), $where, $params);
     } // function delete_all
 
 
