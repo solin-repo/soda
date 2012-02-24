@@ -147,7 +147,8 @@ class helper {
      * the server side code for handling the ajax call here).
      *
      * @param  array        $html_attributes Array of attributes to include in form tag (optional)
-     * @param  string       $js_validate     Name of the javascript validation function (optional) - cancels submit if it returns false
+     * @param  string       $js_validate     Name of the javascript validation function (optional) - cancels submit if it returns false.
+     *                                       The function is called with the trigger (i.e. the form) as its argument.
      * @param  string       $js_callback     Name of the javascript callback function to be called upon 'success'
      *                                       Please note that the original trigger object (i.e. the form) is made available in the variable 'trigger'
      * @param  string       $target          Target of the callback function (optional). If false, the $js_callback
@@ -161,8 +162,8 @@ class helper {
         echo $this->form_tag($html_attributes);
         echo $displayer();
         echo "</form>";
-        $validate = ($js_validate) ? "if (! $js_validate()) return false;" : "";
-        $callback = ($target) ? "function(data) {{$js_callback}(data, '$target');}" : "function(data) {{$js_callback}}";
+        $validate = ($js_validate) ? "if (! $js_validate(trigger)) return false;" : "";
+        $callback = ($target) ? "function(data) {{$js_callback}(data, trigger, '$target');}" : "function(data) {{$js_callback}}";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function() {
