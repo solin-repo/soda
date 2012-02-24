@@ -358,9 +358,10 @@ class controller {
      *
      * @param  array  $data_array Associative array with variable names pointing to corresponding values (optional)
      * @param  string $view       View to include, defaults to view with same name as current action (optional)
+     * @param  string $template   Whether to use the module's template, defaults to true (optional)
      * @return void
      */
-    function get_view($data_array = array(), $view = false) {
+    function get_view($data_array = array(), $view = false, $template = true) {
         global $CFG, $id;
         
         // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
@@ -376,6 +377,10 @@ class controller {
         if (! file_exists($view_path)) {
             $parent_views = static::model_name(get_parent_class($this));
             $view_path = "{$CFG->dirroot}/mod/{$this->mod_name}/views/{$parent_views}/{$this->view}.html";
+        }
+        if (! $template) {
+            include_once($view_path);
+            return;
         }
         $template_path = "{$CFG->dirroot}/mod/$this->mod_name/views/template.html";
         if (file_exists($template_path)) {
