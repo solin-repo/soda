@@ -211,11 +211,13 @@ class helper {
      * @param   string       $url             Post url, i.e. destination of the ajax request (optional), defaults to javascript 'this.href' 
      *                                        (which means: the href attribute of the event trigger)
      * @param   string       $event_type      Event which should trigger the ajax request (optional), defaults to 'click'
+     * @param   string       $return          Value returned to event trigger (optional), defaults to javascript 'false'
      * @return  void
      */
-    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click') {
+    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click', $return = false) {
         $url = ($url) ? "'$url'" : "this.href";
         $success = ($js_callback) ? ", success: function(data) {{$js_callback}(data, trigger);}" : "";
+        $return_value = ($return) ? "true" : "false";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function () {
@@ -226,7 +228,7 @@ class helper {
                                   url: $url
                                   $success
                               });
-                              return false;
+                              return $return_value;
                           });
                       }
                   );
