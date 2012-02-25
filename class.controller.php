@@ -49,6 +49,7 @@ class controller {
     var $view;
     var $helpers = array();
     var $no_layout = false;
+    var $overriding_no_layout = false;
     var $user;
     protected $_moodle_header = '';
 
@@ -325,6 +326,7 @@ class controller {
 	protected function _prepare_moodle_header($mod_name) {
         global $cm, $course, $CFG, $OUTPUT, $PAGE;
 
+        if ($this->overriding_no_layout) return;
         $PAGE->set_url("/mod/$mod_name/index.php", array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
         $PAGE->set_pagelayout('admin');
 
@@ -365,7 +367,7 @@ class controller {
         global $CFG, $id;
         
         // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
-        if (! $this->no_layout) $this->_prepare_moodle_header($this->mod_name);
+        if (! ($this->no_layout || $this->overriding_no_layout) ) $this->_prepare_moodle_header($this->mod_name);
 
         foreach($data_array as $variable_name => $value) {
             $$variable_name = $value;

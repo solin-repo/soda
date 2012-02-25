@@ -87,6 +87,8 @@ include_once("{$CFG->dirroot}/local/soda/class.helper.php");
 class soda {
 
     var $no_layout = false;
+    var $overriding_no_layout = false;
+    var $mod_name = false;
 
     /**
      * Instantiates soda class and creates all standard Moodle module library functions.
@@ -95,6 +97,7 @@ class soda {
      */
     function __construct() {
         $this->create_mod_library_functions( get_called_class() );
+        $this->mod_name = get_called_class();
     } // function __construct
 
 
@@ -104,16 +107,19 @@ class soda {
      *
      * @return void
      */
-    function display() {            
+    function display($no_layout = false, $activity_id = false, $overriding_controller = false, $overriding_action = false) {            
+
+        $this->overriding_no_layout = $no_layout;
         $mod_name = get_called_class();
         global ${$mod_name}, $CFG, $cm, $course, $soda_module_name;
         $soda_module_name = $mod_name;
-        ${$mod_name} = static::get_module_instance();
+        ${$mod_name} = static::get_module_instance($activity_id);
         static::set_variables($mod_name);
 
         // TODO: call default module->index() to show 'all instances of module'
         $action = optional_param('action', 'index', PARAM_RAW);
-        $this->add_layout_and_dispatch($action);
+        $action = ($overriding_action) ? $overriding_action : $action;
+        $this->add_layout_and_dispatch($action, $overriding_controller);
     } // function display
 
 
@@ -125,20 +131,23 @@ class soda {
      * be instantiated.
      * Then, the method from the $action parameter is invoked (the action function is called).
      * Finally, the after_action method is called on the controller.
+     * NOTE: this method needs refactoring
      *
      * @param   string  $action Method to call on the target controller
      * @return  controller
      */
-    function dispatch($action) {
+    function dispatch($action, $overriding_controller) {
         $mod_name = get_called_class();
         global $CFG, ${$mod_name}, $PAGE, $soda_module_name, $cm;
 
         $controller = optional_param('controller', $mod_name, PARAM_RAW);
+        $controller = ($overriding_controller) ? $overriding_controller : $controller;
         $helpers = array($this->get_helper($mod_name), $this->get_helper($mod_name, $controller));
 
         if (! controller::load_file($controller, $mod_name)) {
             // no specific controller - let's fallback to default
             $instance = new controller($mod_name, ${$mod_name}->id, $action);
+            $instance->overriding_no_layout = $this->overriding_no_layout;
             return $this->perform_action($instance, $action, $helpers);
         }
         $record_id = optional_param("{$controller}_id", false, PARAM_INT);
@@ -147,6 +156,7 @@ class soda {
         }
         $class = $controller . "_controller";
         $instance = new $class($mod_name, ${$mod_name}->id, $action);
+        $instance->overriding_no_layout = $this->overriding_no_layout;
         return $this->perform_action($instance, $action, $helpers, $record_id);
     } // function dispatch
 
@@ -201,17 +211,17 @@ class soda {
      * @param   string  $action  Method to invoke on the controller
      * @return  void
      */
-    function add_layout_and_dispatch($action) {
+    function add_layout_and_dispatch($action, $overriding_controller) {
         $mod_name = get_called_class();
         global $CFG, $cm, $PAGE, $soda_module_name, ${$mod_name}, $course;
 
         // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
-        require_course_login($course);
+        if (! $this->overriding_no_layout) require_course_login($course);
 
         ob_start(); // Start output buffering
-        $controller = $this->dispatch($action);
+        $controller = $this->dispatch($action, $overriding_controller);
         $content = ob_get_contents(); // Store buffer in variable
         ob_end_clean(); // End buffering and clean up
 
@@ -235,7 +245,7 @@ class soda {
      * @return  boolean     Returns true if no layout is required, otherwise false
      */
     function no_layout_required() {
-        if ($this->no_layout) return true;
+        if (($this->no_layout) || ($this->overriding_no_layout)) return true;
         if (optional_param('no_layout', false, PARAM_RAW)) return true;
         return false;
     } // function no_layout_required
@@ -416,23 +426,23 @@ class soda {
     } // function get_navigation
 
 
-    static function get_module_instance() { 
+    static function get_module_instance($activity_id = false) { 
         global $course, $cm, $id, $DB;
         
-        $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
-        $a  = optional_param('a', 0, PARAM_INT);  // planner ID
+        $id = optional_param('id', 0, PARAM_INT); // Course Module ID
 
-        if ($id) {
+        if ($activity_id) {
+            $mod_instance  = $DB->get_record(get_called_class(), array('id' => $activity_id), '*', MUST_EXIST);
+            $course     = $DB->get_record('course', array('id' => $mod_instance->course), '*', MUST_EXIST);
+            $cm         = get_coursemodule_from_instance(get_called_class(), $mod_instance->id, $course->id, false, MUST_EXIST);
+        } elseif ($id) {
             $cm         = get_coursemodule_from_id(get_called_class(), $id, 0, false, MUST_EXIST);
             $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
             $mod_instance  = $DB->get_record(get_called_class(), array('id' => $cm->instance), '*', MUST_EXIST);
-        } elseif ($n) {
-            $mod_instance  = $DB->get_record(get_called_class(), array('id' => $n), '*', MUST_EXIST);
-            $course     = $DB->get_record('course', array('id' => $mod_instance->course), '*', MUST_EXIST);
-            $cm         = get_coursemodule_from_instance(get_called_class(), $mod_instance->id, $course->id, false, MUST_EXIST);
         } else {
             error('You must specify a course_module ID or an instance ID');
         }
+        $id = $cm->id;
         return $mod_instance;
     } // function get_module_instance
 
@@ -445,6 +455,7 @@ class soda {
 
     static function set_variables($mod_name) {
         global $cm, $id, $course, $context, $DB;
+        /* Redundant!
         if (! $cm = get_coursemodule_from_id($mod_name, $id)) {
             error("Course Module ID was incorrect");
         }
@@ -452,6 +463,7 @@ class soda {
         if (! $course = $DB->get_record("course", array("id" => $cm->course) )) {
             error("Course is misconfigured");
         } 
+         */
         
         if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
             print_error('badcontext');
@@ -534,6 +546,17 @@ class soda {
         }
         return $ret;
     } // function arguments 
+
+
+    public static function find_cm_by_course_and_section($course_id, $section_id) {
+        global $DB;
+        if (! $cm = $DB->get_record_sql(
+            "SELECT cm.* FROM {course_modules} AS cm, {modules} AS m 
+             WHERE m.name = :module AND m.id = cm.module AND course = :course_id AND section = :section_id",
+            array( 'course_id' => $course_id, 'module' => get_called_class(), 'section_id' => $section_id)
+        )) return false;
+        return $cm;               
+    } // function find_cm_by_course_and_sectioncourse_module_by_course_and_section
 
 } // class soda 
 ?>
