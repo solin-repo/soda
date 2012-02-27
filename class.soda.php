@@ -33,6 +33,7 @@ include_once("{$CFG->dirroot}/local/soda/class.controller.php");
 include_once("{$CFG->dirroot}/local/soda/class.soda_error.php");
 include_once("{$CFG->dirroot}/local/soda/class.model.php");
 include_once("{$CFG->dirroot}/local/soda/class.helper.php");
+include_once("{$CFG->dirroot}/local/soda/class.user.php");
 
 /**
  * The Soda base class. If you instantiate this class, all default lib functions for 

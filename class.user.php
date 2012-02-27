@@ -58,5 +58,10 @@ class user extends model {
 		}
 		return array($password=>hash_internal_user_password($password));
 	}
+
+
+    function full_name() {
+        return $this->firstname . ' ' . $this->lastname;
+    } // function full_name
 }
 ?>
