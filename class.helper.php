@@ -151,8 +151,7 @@ class helper {
      *                                       The function is called with the trigger (i.e. the form) as its argument.
      * @param  string       $js_callback     Name of the javascript callback function to be called upon 'success'
      *                                       Please note that the original trigger object (i.e. the form) is made available in the variable 'trigger'
-     * @param  string       $target          Target of the callback function (optional). If false, the $js_callback
-     *                                       argument may also contain the body of an anonymous javascript function definition.
+     * @param  string       $target          Target of the callback function (optional). When present, it is the 3rd argument in the callback function.
      * @param  function     $displayer       Anonymous function containing the code for displaying the body of the form        
      * @return void
      */
@@ -163,7 +162,8 @@ class helper {
         echo $displayer();
         echo "</form>";
         $validate = ($js_validate) ? "if (! $js_validate(trigger)) return false;" : "";
-        $callback = ($target) ? "function(data) {{$js_callback}(data, trigger, '$target');}" : "function(data) {{$js_callback}}";
+        $target = ($target) ? ", '$target'" : "";
+        $callback = "function(data) {{$js_callback}(data, trigger{$target});}";
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function() {
