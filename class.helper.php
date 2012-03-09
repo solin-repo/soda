@@ -167,7 +167,9 @@ class helper {
         echo "<script type='text/javascript'>
                   $(document).ready(
                       function() {
+                          //console.log('document ready!');
                           $('#{$html_attributes['id']}').submit(function() {
+                              console.log('submit detected');
                               var trigger = this;
                               $validate
                               $.post(
