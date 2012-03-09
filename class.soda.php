@@ -109,7 +109,6 @@ class soda {
      * @return void
      */
     function display($no_layout = false, $activity_id = false, $overriding_controller = false, $overriding_action = false) {            
-
         $this->overriding_no_layout = $no_layout;
         $mod_name = get_called_class();
         global ${$mod_name}, $CFG, $cm, $course, $soda_module_name;
