@@ -169,7 +169,7 @@ class helper {
                       function() {
                           //console.log('document ready!');
                           $('#{$html_attributes['id']}').submit(function() {
-                              console.log('submit detected');
+                              //console.log('submit detected');
                               var trigger = this;
                               $validate
                               $.post(
