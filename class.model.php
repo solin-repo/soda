@@ -567,6 +567,19 @@ class model {
 
 
     /**
+     * Wrapper for model#attach_properties.
+     * Adds key - value pairs to objects as properties and their values.
+     * Does NOT save the model.
+     *
+     * @param recordset $properties   Array of properties and corresponding values
+     * @return void
+     */
+    function update($properties = false) {
+        $this->attach_properties($properties);
+    } // function update
+
+
+    /**
      * Creates objects from a collection of properties.
      * This function is typically used to convert form post data into a collection of objects.
      *
