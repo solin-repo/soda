@@ -221,11 +221,14 @@ class controller {
 
     /**
      * Wrapper function for Moodle's require_login
+     * require_login is called with $autologinguest = false by default
      *
+     * @param  boolean  $autologinguest If true, the user will be automatically logged in as guest,
+     *                                  if $CFG->autologinguests is also true. Defaults to false.
      * @return void
      */
-    function require_login() {
-        require_login();
+    function require_login($autologinguest = false) {
+        require_login($courseorid = NULL, $autologinguest);
     } // function require_login
 
 
