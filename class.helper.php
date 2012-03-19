@@ -151,7 +151,7 @@ class helper {
      *                                       The function is called with the trigger (i.e. the form) as its argument.
      * @param  string       $js_callback     Name of the javascript callback function to be called upon 'success'
      *                                       Please note that the original trigger object (i.e. the form) is made available in the variable 'trigger'
-     * @param  string       $target          Target of the callback function (optional). When present, it is the 3rd argument in the callback function.
+     * @param  string       $target          Target of the callback function (optional). When present, it is the 3rd argument in the callback function. Defaults to false.
      * @param  function     $displayer       Anonymous function containing the code for displaying the body of the form        
      * @return void
      */
@@ -210,15 +210,18 @@ class helper {
      * @param   string       $selector        jQuery type selector of the elements to be converted into ajax links (optional) default: 'a'
      * @param   string       $js_callback     Name of javascript callback function which is executed upon completion of the ajax request (optional)
      *                                        The callback function is executed with 'data' and 'trigger' respectively as its parameters.
+     *                                        If argument $target is present, then the javascript callback function is called with this arugment as well.
      * @param   string       $url             Post url, i.e. destination of the ajax request (optional), defaults to javascript 'this.href' 
      *                                        (which means: the href attribute of the event trigger)
      * @param   string       $event_type      Event which should trigger the ajax request (optional), defaults to 'click'
      * @param   string       $return          Value returned to event trigger (optional), defaults to javascript 'false'
+     * @param   string       $target          Target of the callback function (optional). When present, it is the 3rd argument in the callback function. Defaults to false.
      * @return  void
      */
-    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click', $return = false) {
+    function ajax_link($container_id, $selector = 'a', $js_callback = false, $url = false, $event_type = 'click', $return = false, $target = false) {
         $url = ($url) ? "'$url'" : "this.href";
-        $success = ($js_callback) ? ", success: function(data) {{$js_callback}(data, trigger);}" : "";
+        $target = ($target) ? ", '$target'" : "";
+        $success = ($js_callback) ? ", success: function(data) {{$js_callback}(data, trigger$target);}" : "";
         $return_value = ($return) ? "true" : "false";
         echo "<script type='text/javascript'>
                   $(document).ready(
