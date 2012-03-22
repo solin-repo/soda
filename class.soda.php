@@ -83,6 +83,9 @@ include_once("{$CFG->dirroot}/local/soda/class.user.php");
  *
  *   $compass_instance->display();
  *
+ *
+ * TODO: remove global $course and store the information in a static variable
+ *
  * @package Soda
  */
 class soda {
