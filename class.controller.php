@@ -353,6 +353,30 @@ class controller {
 		return $this->_moodle_header;
 	}
 		
+    static function create_replace_array($data, $prefix='') {
+        $in = array();
+        $out = array();
+        
+        if (!$prefix) {
+            $prefix = '{$';
+        }
+        
+        if (is_array($data)) {
+            foreach ($data as $varname=>$value) {
+                if (!is_array($value)) {
+                    $in[] = $prefix . $varname . '}';
+                    $out[] = $value;
+                } else {
+                    $recursive_data = self::create_replace_array($value, $prefix . '.' . $varname);
+                    $in = array_merge($in, $recursive_data['in']);
+                    $out = array_merge($out, $recursive_data['out']);
+                }
+            }
+        }
+        
+        return array('in' => $in, 'out' => $out);
+    }
+        
     /**
      * Includes a html file containing the view for the current action.
      * If you specify the view parameter, that view will used instead of the default view.
@@ -392,7 +416,15 @@ class controller {
             include_once($template_path);
             return;
         }
+        
+        ob_start();
         include_once($view_path);
+        $contents = ob_get_clean();
+        
+        $replace_array = self::create_replace_array($data_array);
+        $contents = str_replace($replace_array['in'], $replace_array['out'], $contents);
+        echo $contents;
+        
     } // function get_view
 
 
