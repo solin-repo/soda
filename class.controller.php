@@ -51,6 +51,7 @@ class controller {
     var $no_layout = false;
     var $overriding_no_layout = false;
     var $user;
+    var $auto_replace_vars = false; // replaces template variables like {$username}, {$city}, {$user.firstname}
     protected $_moodle_header = '';
 
 
@@ -353,6 +354,18 @@ class controller {
 		return $this->_moodle_header;
 	}
 		
+    /**
+     * Converts variables array to an array with indexes 'in' and 'out', useable by str_replace
+     * e.g. input: array('hello' => 'world, 'user' => array('name' => 'Pete', 'age' => '28'))
+     * output: array(
+     *   'in' => array('{$hello}', '{$user.name}', '{$user.age}'),
+     *   'out' => array('world', 'Pete', '28')
+     * );
+     * 
+     * @param mixed $data
+     * @param string $prefix
+     * @return
+     */
     static function create_replace_array($data, $prefix='') {
         $in = array();
         $out = array();
@@ -367,7 +380,7 @@ class controller {
                     $in[] = $prefix . $varname . '}';
                     $out[] = $value;
                 } else {
-                    $recursive_data = self::create_replace_array($value, $prefix . '.' . $varname);
+                    $recursive_data = self::create_replace_array($value, $prefix . $varname . '.');
                     $in = array_merge($in, $recursive_data['in']);
                     $out = array_merge($out, $recursive_data['out']);
                 }
@@ -421,8 +434,14 @@ class controller {
         include_once($view_path);
         $contents = ob_get_clean();
         
-        $replace_array = self::create_replace_array($data_array);
-        $contents = str_replace($replace_array['in'], $replace_array['out'], $contents);
+        if ($this->auto_replace_vars) {
+            // replace vars like {$user.username}
+            $replace_array = self::create_replace_array($data_array);
+            $contents = str_replace($replace_array['in'], $replace_array['out'], $contents);
+            // remove {$var1}, {$var2}, .. if not supplied in $data_array
+            $contents = preg_replace('/\{\$[a-z_0-9\.]+\}/i', '', $contents); 
+        }
+        
         echo $contents;
         
     } // function get_view
