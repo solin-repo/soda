@@ -376,10 +376,10 @@ class controller {
         
         if (is_array($data)) {
             foreach ($data as $varname=>$value) {
-                if (!is_array($value)) {
+                if (!is_array($value) && (!is_object($value))) {
                     $in[] = $prefix . $varname . '}';
                     $out[] = $value;
-                } else {
+                } elseif (!is_object($value)) {
                     $recursive_data = self::create_replace_array($value, $prefix . $varname . '.');
                     $in = array_merge($in, $recursive_data['in']);
                     $out = array_merge($out, $recursive_data['out']);
@@ -437,6 +437,7 @@ class controller {
         if ($this->auto_replace_vars) {
             // replace vars like {$user.username}
             $replace_array = self::create_replace_array($data_array);
+            print_r($replace_array);
             $contents = str_replace($replace_array['in'], $replace_array['out'], $contents);
             // remove {$var1}, {$var2}, .. if not supplied in $data_array
             $contents = preg_replace('/\{\$[a-z_0-9\.]+\}/i', '', $contents); 
