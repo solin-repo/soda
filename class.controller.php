@@ -437,7 +437,6 @@ class controller {
         if ($this->auto_replace_vars) {
             // replace vars like {$user.username}
             $replace_array = self::create_replace_array($data_array);
-            print_r($replace_array);
             $contents = str_replace($replace_array['in'], $replace_array['out'], $contents);
             // remove {$var1}, {$var2}, .. if not supplied in $data_array
             $contents = preg_replace('/\{\$[a-z_0-9\.]+\}/i', '', $contents); 
