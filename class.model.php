@@ -67,7 +67,6 @@ class model {
      */
     function __construct($properties) {
         $this->attach_properties($properties);
-        $this->define_validation_rules();
     } // function __construct
 
 
@@ -959,6 +958,9 @@ class model {
         foreach($this->get_properties() as $property => $value) {
             ${$property} = $value;
         }
+        
+        $this->define_validation_rules();
+        
         $valid = true;
         if (!isset($this->validation_rules) || !count($this->validation_rules) ) return true;
         foreach($this->validation_rules as $rule) {
