@@ -53,6 +53,9 @@ class controller {
     var $user;
     var $auto_replace_vars = false; // replaces template variables like {$username}, {$city}, {$user.firstname}
     protected $_moodle_header = '';
+    protected $_page_title;
+    protected $_nav_title;
+    protected $_nav_link;
 
 
     /**
@@ -333,6 +336,15 @@ class controller {
         if ($this->overriding_no_layout) return;
         $PAGE->set_url("/mod/$mod_name/index.php", array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
         $PAGE->set_pagelayout('admin');
+        
+        if (isset($this->_page_title)) {
+            $PAGE->set_title($this->_page_title);
+            $PAGE->set_heading($this->_page_title, 3);
+        }
+        if (isset($this->_nav_title)) {
+            $PAGE->navbar->ignore_active();
+            $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
+        }
 
         ob_start(); // Start output buffering
         $str_mod_name_singular = get_string('modulename', $mod_name);
@@ -561,6 +573,12 @@ class controller {
     function base_url() {
         return $this->base_url;        
     } // function base_url
+    
+    public function set_page_info($title, $nav_title, $nav_link) {
+        $this->_page_title = $title;
+        $this->_nav_title = $nav_title;
+        $this->_nav_link = $nav_link;
+    }
 
 } // class controller
 
