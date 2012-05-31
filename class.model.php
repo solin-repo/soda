@@ -337,7 +337,7 @@ class model {
 
 
     /**
-     * Sorts an array of objects by a property or method.
+     * Sorts an array of objects by a property or method. Please note that the $objects argument is modified.
      *
      * @param array  $objects            Array of objects to sort
      * @param string $property_or_method Name of the property or method to sort by
@@ -356,7 +356,27 @@ class model {
 
 
     /**
-     * Sorts an array of objects by a property
+     * Groups objects by value of their property $property.
+     * Please note: the side effect of calling this method is that the original $objects array will be sorted
+     * by $property
+     *
+     * @param array  $objects            Array of objects to sort
+     * @param string $property_or_method Name of the property or method to sort by
+     * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
+     * @return array                     Array of arrays, where each array contains objects with the same value for $property
+     */
+    public static function group_by(&$objects, $property, $order) {
+        static::sort_by($objects, $property, $order);
+        $grouped = array();
+        foreach($objects as $object) {
+            $grouped[$object->$property][] = $object;
+        }
+        return $grouped;
+    } // function group_by
+
+
+    /**
+     * Sorts an array of objects by a property. Please note that the $objects argument is modified.
      *
      * @param array  $objects            Array of objects to sort
      * @param string $property           Name of the property to sort by
@@ -376,7 +396,7 @@ class model {
 
 
     /**
-     * Sorts an array of objects by a method, i.e. by comparing the output of the called method.
+     * Sorts an array of objects by a method, i.e. by comparing the output of the called method. Please note that the $objects argument is modified.
      *
      * @param array  $objects            Array of objects to sort
      * @param string $method             Name of the method to sort by
