@@ -342,7 +342,7 @@ class model {
      * @param array  $objects            Array of objects to sort
      * @param string $property_or_method Name of the property or method to sort by
      * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
-     * @return array                     Returns sorted array
+     * @return boolean                   Returns true upon success, otherwise false
      */
     public static function sort_by(&$objects, $property_or_method, $order = "ASC") {
         if (! $property_or_method) return;
@@ -361,7 +361,7 @@ class model {
      * @param array  $objects            Array of objects to sort
      * @param string $property           Name of the property to sort by
      * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
-     * @return array                     Returns sorted array
+     * @return boolean                   Returns true upon success, otherwise false
      */
     public static function sort_by_property(&$objects, $property, $order) {
         return usort($objects, function($a, $b) use ($property, $order) {
@@ -381,7 +381,7 @@ class model {
      * @param array  $objects            Array of objects to sort
      * @param string $method             Name of the method to sort by
      * @param string $order              Sorting order (defaults to 'ascending', e.g. a, .. , z or 0, .. n)
-     * @return array                     Returns sorted array
+     * @return boolean                   Returns true upon success, otherwise false
      */
     public static function sort_by_method(&$objects, $method, $order) {
         return usort($objects, function($a, $b) use ($method, $order) {
@@ -497,6 +497,8 @@ class model {
     public static function load_all($where_clause = false, $include = false, $limitfrom = null, $limitnum = null) {
         global $CFG;
         $where = ($where_clause) ? "WHERE $where_clause " : "";
+        $sql = "SELECT * FROM {$CFG->prefix}" . static::table_name() . " $where";
+        //exit($sql);
         if (! $recordset = get_recordset_sql("SELECT *
                                               FROM {$CFG->prefix}" . static::table_name() . " 
                                               $where",
