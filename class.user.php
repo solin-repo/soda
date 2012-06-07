@@ -11,7 +11,6 @@
 //                                                                         //
 // Programming and development:                                            //
 //     Onno Schuit (o.schuit[atoraround]solin.nl)                          //
-//     Menno de Ridder
 //                                                                         //
 // For bugs, suggestions, etc. contact:                                    //
 //     Onno Schuit (o.schuit[atoraround]solin.nl)                          //

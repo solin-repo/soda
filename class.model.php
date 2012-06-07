@@ -62,10 +62,10 @@ class model {
      * Instantiates model class with an array of property-value pairs. 
      * Calls the define_validation_rules method to add validation rules. 
      *
-     * @param array  $properties  Properties and their values to populate the model with
+     * @param array  $properties  Properties and their values to populate the model with (optional)
      * @return object
      */
-    function __construct($properties) {
+    function __construct($properties = false) {
         $this->attach_properties($properties);
     } // function __construct
 
