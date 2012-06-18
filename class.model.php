@@ -57,6 +57,7 @@ class model {
         'through'
     );
     static $table_relations = false;
+    static $connection_object = false;
 
     /**
      * Instantiates model class with an array of property-value pairs. 
@@ -498,9 +499,10 @@ class model {
      * @return array
      */
     public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
-        global $CFG, $DB;
+        global $CFG;
+        $connection = static::get_connection_object();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
-        if (! $recordset = $DB->get_recordset_sql("SELECT *
+        if (! $recordset = $connection->get_recordset_sql("SELECT *
                                                    FROM {$CFG->prefix}" . static::table_name() . " 
                                                    $where",
                                                    $params,
@@ -510,6 +512,13 @@ class model {
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
     } // function load_all
+
+
+    public static function get_connection_object() {
+        global $DB;
+        if (static::$connection_object) return static::$connection_object;
+        return $DB;
+    } // function get_connection_object
 
 
     /**
@@ -658,9 +667,9 @@ class model {
      * @return mixed                      Returns true upon success or false if an error occured.
      */
     public static function delete_all($where_clause = false, $params = null) {
-        global $DB;
+        $connection = static::get_connection_object();
         $where = ($where_clause) ? "$where_clause" : "1=1";
-        return $DB->delete_records_select(static::table_name(), $where, $params);
+        return $connection->delete_records_select(static::table_name(), $where, $params);
     } // function delete_all
 
 
@@ -1010,16 +1019,16 @@ class model {
      * @return integer  Returns the record id of the object upon success, otherwise false
      */
     function save_without_validation($record_id = false) {
-        global $DB;
+        $connection = static::get_connection_object();
         $class = get_class($this);
         $this->timemodified = time();
         if ($record_id || (property_exists($this, 'id') && $this->id && $this->id != '') ) {
             if ($record_id) $this->id = $record_id;
-            if (!$DB->update_record($class::table_name(), $this)) return false;
+            if (!$connection->update_record($class::table_name(), $this)) return false;
             return $this->id;
         }
         $this->timecreated = time();
-        return $this->id = $DB->insert_record($class::table_name(), $this);               
+        return $this->id = $connection->insert_record($class::table_name(), $this);               
     } // function save_without_validation
 
 
