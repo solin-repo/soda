@@ -501,9 +501,10 @@ class model {
     public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
         global $CFG;
         $connection = static::get_connection_object();
+        $prefix = $connection->get_prefix();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
         if (! $recordset = $connection->get_recordset_sql("SELECT *
-                                                   FROM {$CFG->prefix}" . static::table_name() . " 
+                                                   FROM {$prefix}" . static::table_name() . " 
                                                    $where",
                                                    $params,
                                                    $limitfrom, $limitnum) ) return;
@@ -514,6 +515,11 @@ class model {
     } // function load_all
 
 
+    /**
+     * Returns a connection object, usually $DB (global var)
+     *
+     * @return object   Returns instance of class moodle_database
+     */
     public static function get_connection_object() {
         global $DB;
         if (static::$connection_object) return static::$connection_object;
@@ -544,19 +550,37 @@ class model {
      * If this fails, then no actual save takes place for that object. All other valid objects
      * are still saved.
      *
-     * @param array     $objects      Objects to save
-     * @param array     $constants    Constants to attach to each object as a property before saving (optional)
-     * @return boolean                Returns true if all objects were valid, otherwise false 
+     * @param array     $objects            Objects to save
+     * @param array     $constants          Constants to attach to each object as a property before saving (optional)
+     * @param boolean   $skip_validation    Does not validate if set to true, which will cause this function to always return true (optional, defaults to false)  
+     * @return boolean                      Returns true if all objects were valid, otherwise false 
      */
-    public static function save_all($objects, $constants = false) {
+    public static function save_all($objects, $constants = false, $skip_validation = false) {
         if ( !isset($objects) || !is_array($objects) || !count($objects) ) return true;
         $valid = true;
         foreach($objects as $object) {
             $object->attach_properties($constants);
+            if ($skip_validation) {
+                $object->save_without_validation();
+                continue;
+            }
             $valid = $valid && $object->save();
         }
         return $valid;
     } // function save_all
+
+
+    /**
+     * Wrapper for save_all. Calls save all with parameter $skip_validation set to true (won't validate).
+     * Please note that this function will always return true.
+     *
+     * @param array     $objects            Objects to save
+     * @param array     $constants          Constants to attach to each object as a property before saving (optional)
+     * @return boolean                      Returns true
+     */
+    public static function save_all_without_validation($objects, $constants = false) {
+        return static::save_all($objects, $constants, $skip_validation = true);
+    } // function save_all_without_validation
 
 
     /**
@@ -1021,13 +1045,11 @@ class model {
     function save_without_validation($record_id = false) {
         $connection = static::get_connection_object();
         $class = get_class($this);
-        $this->timemodified = time();
         if ($record_id || (property_exists($this, 'id') && $this->id && $this->id != '') ) {
             if ($record_id) $this->id = $record_id;
             if (!$connection->update_record($class::table_name(), $this)) return false;
             return $this->id;
         }
-        $this->timecreated = time();
         return $this->id = $connection->insert_record($class::table_name(), $this);               
     } // function save_without_validation
 
