@@ -1050,8 +1050,22 @@ class model {
             if (!$connection->update_record($class::table_name(), $this)) return false;
             return $this->id;
         }
-        return $this->id = $connection->insert_record($class::table_name(), $this);               
+        return $this->id = $this->create();
     } // function save_without_validation
+
+
+    /**
+     * Inserts a new record in the database. Usually only indirectly called through save_without_validation.
+     * Can be overwritten in your own model if you want to perform some additional operation, such as always
+     * creating an additional record in another table.
+     *
+     * @return integer  Returns the record id of the object upon success, otherwise false
+     */
+    function create() {
+        $connection = static::get_connection_object();
+        $class = get_class($this);
+        return $this->id = $connection->insert_record($class::table_name(), $this);               
+    } // function create
 
 
     /**
