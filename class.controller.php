@@ -211,7 +211,8 @@ class controller {
      * Wrapper function for Moodle's has_capability function.
      * Calls has_capability with the current context and the currently logged in user, for the module where the controller resides.
      *
-     * @param  string       $capibility_short Name of the capability to check, defaults to 'edit' (optional)
+     * @param  string       $capability_short Name of the capability to check, defaults to 'edit' (optional)
+     * @param  string       $model_name       Name of the model for which the capability must be checked (defaults to 'current')
      * @param  array        $user             User to check capability for, defaults to currently logged in user (optional)
      * @return boolean                        Returns true if user has capability, otherwise false
      */
@@ -221,6 +222,18 @@ class controller {
         $model_name = ($model_name !== false ) ? $model_name : $this->model_name;
         return has_capability("mod/{$this->mod_name}:$capability_short{$model_name}", $context, $user->id); 
     } // function check_capability
+
+
+    /**
+     * Wrapper function for check_capability, but sets model_name to empty string.
+     * Calls has_capability with the current context and the currently logged in user, for the module where the controller resides.
+     *
+     * @param  string       $capibility_short Name of the capability to check, defaults to 'edit' (optional)
+     * @return boolean                        Returns true if user has capability, otherwise false
+     */
+    function has_capability($capability_short = 'edit') {
+        return $this->check_capability($capability_short, '');
+    } // function has_capability
 
 
     /**
