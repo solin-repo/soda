@@ -268,15 +268,32 @@ class controller {
      * Typically used to provide the user with feedback about what happened before a redirect, e.g. to
      * display the message "Organization addresss saved", after saving an object of class address.
      *
-     * @param  string  $key    Key of the message to print
-     * @parem  boolean $delete If delete is true (the default value), the message will be deleted from the session object (optional)
+     * @param  string  $key     Key of the message to print
+     * @parem  boolean $delete  If delete is true (the default value), the message will be deleted from the session object (optional)
      * @return void
      */
-	function print_message($message, $delete = true) {
-		if (!isset($_SESSION['messages'][$message])) return false;
-		echo $_SESSION['messages'][$message];
-		if ($delete) unset($_SESSION['messages'][$message]);
+	function print_message($key, $delete = true) {
+        if ($message = $this->get_message($key, $delete)) {
+            echo $message;
+        }
 	} // function print_message
+    
+
+    /**
+     * Get a message from the session object.
+     * Typically used to provide the user with feedback about what happened before a redirect, e.g. to
+     * display the message "Organization addresss saved", after saving an object of class address.
+     *
+     * @param  string  $key     Key of the message to retrieve
+     * @parem  boolean $delete  If delete is true (the default value), the message will be deleted from the session object (optional)
+     * @return void
+     */
+    function get_message($key, $delete = true) {
+		if (!isset($_SESSION['messages'][$key])) return false;
+		$message = $_SESSION['messages'][$key];
+		if ($delete) unset($_SESSION['messages'][$key]);
+        return $message;
+    } // function get_message
 
 
     /**
