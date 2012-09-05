@@ -304,7 +304,7 @@ class model {
 
 
     /**
-     * Loads associated models by if they appear in an association table together with
+     * Loads associated models if they appear in an association table together with
      * an object out of $objects.
      *
      * @param array  $objects     Array of objects for which to find the associated models
@@ -319,8 +319,10 @@ class model {
         include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association}.php");
         include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$through}.php");
 
-        $through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" );
-        $association_objects = $association::load_all("id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+        $association_objects = array();
+        if ($through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" )) {
+            $association_objects = $association::load_all("id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+        }
         //exit(print_object($through_objects));
 
         $association_name = $association::plural();
