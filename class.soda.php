@@ -221,7 +221,7 @@ class soda {
         // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
-        if (! $this->overriding_no_layout) require_course_login($course);
+        if (! $this->overriding_no_layout) require_course_login($course, true, $cm);
 
         ob_start(); // Start output buffering
         $controller = $this->dispatch($action, $overriding_controller);
@@ -471,6 +471,12 @@ class soda {
             error('You must specify a course_module ID or an instance ID');
         }
         $id = $cm->id;
+
+        /*
+        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        global $PAGE;
+        $PAGE->set_context($context);
+         */
         return $mod_instance;
     } // function get_module_instance
 
@@ -482,7 +488,7 @@ class soda {
 
 
     static function set_variables($mod_name) {
-        global $cm, $id, $course, $context, $DB;
+        global $cm, $id, $course, $context, $DB, $PAGE;
         /* Redundant!
         if (! $cm = get_coursemodule_from_id($mod_name, $id)) {
             error("Course Module ID was incorrect");
@@ -493,9 +499,11 @@ class soda {
         } 
          */
         
+        if (isset($context)) return;
         if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
             print_error('badcontext');
         }  
+        //$PAGE->set_context($context);
     } // function set_variables
 
 

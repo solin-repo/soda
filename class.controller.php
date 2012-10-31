@@ -361,11 +361,12 @@ class controller {
      * @return  string              Returns Moodle layout header
      */
 	protected function _prepare_moodle_header($mod_name) {
-        global $cm, $course, $CFG, $OUTPUT, $PAGE;
+        global $cm, $course, $CFG, $OUTPUT, $PAGE, $context;
 
         if ($this->overriding_no_layout) return;
         $PAGE->set_url("/mod/$mod_name/index.php", array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
-        $PAGE->set_pagelayout('admin');
+        $PAGE->set_heading(format_string($course->fullname));
+        //$PAGE->set_pagelayout('admin');
         
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);
