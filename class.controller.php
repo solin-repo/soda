@@ -361,21 +361,11 @@ class controller {
      * @return  string              Returns Moodle layout header
      */
 	protected function _prepare_moodle_header($mod_name) {
-        global $cm, $course, $CFG, $OUTPUT, $PAGE, $context;
+        global $cm, $course, $CFG, $OUTPUT, $context;
 
         if ($this->overriding_no_layout) return;
-        $PAGE->set_url("/mod/$mod_name/index.php", array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW) ));
-        $PAGE->set_heading(format_string($course->fullname));
-        //$PAGE->set_pagelayout('admin');
-        
-        if (isset($this->_page_title)) {
-            $PAGE->set_title($this->_page_title);
-            $PAGE->set_heading($this->_page_title, 3);
-        }
-        if (isset($this->_nav_title)) {
-            $PAGE->navbar->ignore_active();
-            $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
-        }
+        $this->set_page_variables($mod_name);
+
 
         ob_start(); // Start output buffering
         $str_mod_name_singular = get_string('modulename', $mod_name);
@@ -391,6 +381,32 @@ class controller {
         ob_end_clean(); // End buffering and clean up
         $this->_moodle_header = $header;
     } // function _prepare_moodle_header 
+
+
+    /**
+     * Set Moodle $PAGE variables. Override in your own controller if necessary.
+     *
+     * @param   string  $mod_name   Name of the module
+     * @return  void
+     */
+    public function set_page_variables($mod_name, $course = false) {
+        global $PAGE, $cm;        
+        $query_string = array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
+        if (isset($_REQUEST)) {
+            $query_string = $_REQUEST;
+        }
+        $PAGE->set_url("/mod/$mod_name/index.php", $query_string);
+        if ($course) $PAGE->set_heading(format_string($course->fullname));
+        
+        if (isset($this->_page_title)) {
+            $PAGE->set_title($this->_page_title);
+            $PAGE->set_heading($this->_page_title, 3);
+        }
+        if (isset($this->_nav_title)) {
+            $PAGE->navbar->ignore_active();
+            $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
+        }
+    } // function set_page_variables
 
 
 	public function get_moodle_header() {
@@ -605,6 +621,7 @@ class controller {
         return $this->base_url;        
     } // function base_url
     
+
     public function set_page_info($title, $nav_title, $nav_link) {
         $this->_page_title = $title;
         $this->_nav_title = $nav_title;
