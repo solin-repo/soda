@@ -391,11 +391,13 @@ class controller {
      */
     public function set_page_variables($mod_name, $course = false) {
         global $PAGE, $cm;        
-        $query_string = array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
+        $query_array = array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
         if (isset($_REQUEST)) {
-            $query_string = $_REQUEST;
+            $query_array = $_REQUEST;
         }
-        $PAGE->set_url("/mod/$mod_name/index.php", $query_string);
+        $query_array = self::remove_block_parameters(self::flatten_array($query_array));
+
+        $PAGE->set_url("/mod/$mod_name/index.php", $query_array);
         if ($course) $PAGE->set_heading(format_string($course->fullname));
         
         if (isset($this->_page_title)) {
@@ -407,6 +409,30 @@ class controller {
             $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
         }
     } // function set_page_variables
+
+
+    public static function remove_block_parameters($query_array) {
+        if (! is_array($query_array)) return $query_array;
+        foreach($query_array as $key => $value) {
+            if (substr($key, 0, 4) == 'bui_') unset($query_array[$key]);
+        }
+        return $query_array;
+    } // function remove_block_parameters
+
+
+    /**
+     * Remove all elements from an array which are arrays themselves.
+     *
+     * @param    array   $collection
+     * @return   array   flattened collection
+     */
+    public static function flatten_array($collection) {
+        if (!is_array($collection)) return $collection;
+        foreach($collection as $key => $value) {
+            if (is_array($value)) unset($collection[$key]);
+        }        
+        return $collection;
+    } // function flatten_array
 
 
 	public function get_moodle_header() {
