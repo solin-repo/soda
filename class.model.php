@@ -675,9 +675,11 @@ class model {
      * loaders and finders. Example: company_id_and_year is turned into array('company_id', 'year').
      *
      * @param  string       $properties   String of SQL column names separated by '_and_'
-     * @return array                      Returns an array of column names
+     * @return array                      Returns an array of column names or an empty array if the 
+     *                                    properties string was empty
      */
     public static function extract_properties($properties) {
+        if ($properties == '') return array();
         if (strpos($properties, '_and_') === false) return array($properties);
         return explode('_and_', $properties); 
     } // function extract_properties
@@ -755,23 +757,33 @@ class model {
 
 
     /**
-     * Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values
+     * Constructs an SQL WHERE clause out of an array of column names and an array of corresponding values.
+     * Can also use order criteria. Please note that you should call this function with either column names 
+     * and values, or order criteria (or both) for the call to make sense.
      *
-     * @param  array        $properties     Array of column names. If the $args parameter is not provided, 
-     *                                      $properties is assumed to be an associative array: a column 
-     *                                      name pointing to a value.
-     * @param  array        $args           Array of values for the columns. If not provided, the parameter
-     *                                      $properties must contain the values (optional) 
-     * @return string                       Returns a string containing a WHERE clause
+     * @param  array        $properties      Array of column names. If the $args parameter is not provided, 
+     *                                       $properties is assumed to be an associative array: a column 
+     *                                       name pointing to a value. (Optional)
+     * @param  array        $args            Array of values for the columns. If not provided, the parameter
+     *                                       $properties must contain the values. (Optional) 
+     * @param  array        $order_criteria  Array of order criteria to be used in ORDER BY clause. (Optional)
+     * @return string                        Returns a string containing a WHERE clause
      */
-    public static function build_where_clause($properties, $args = false) {
+    public static function build_where_clause($properties = false, $args = false, $order_criteria = false) {
         $where_parts = array();
         $columns = (! $args) ? $properties : static::map_properties_to_values($properties, $args);
-        if (! is_array($columns) ) return '';
-        foreach($columns as $property => $value) {
-            $where_parts[] = "$property = '$value'";
-        }               
-        return join(' AND ', $where_parts);
+        $where = '';
+        if (count($columns)) {
+            foreach($columns as $property => $value) {
+                $where_parts[] = "$property = '$value'";
+            }               
+            $where = join(' AND ', $where_parts);
+        }
+        $order = '';
+        if ($order_criteria && (is_array($order_criteria))) {
+            $order = ' ORDER BY ' . join(', ', $order_criteria);
+        }
+        return $where . $order;
     } // function build_where_clause
 
 
@@ -784,7 +796,7 @@ class model {
      */
     public static function call_load($method, $args) {
         return static::loader($method, $args, 'load');
-    } // function call_load_all
+    } // function call_load
 
 
     /**
@@ -808,9 +820,16 @@ class model {
      * @return mixed                        Returns an array objects, an object, or false if an error occured.
      */
     public static function loader($method, $args, $loader_name) {
+
         $property_names = static::extract_properties( substr($method, strlen($loader_name . '_by_')) );
+        $order_criteria = false;
+        if (strpos($method, '_order_by_') !== false) {
+            list($raw_property_names, $raw_order_criteria) = (strpos($method, '_and_order_by_') === false) ?  explode('_order_by_', $method) : explode('_and_order_by_', $method);
+            $property_names = static::extract_properties( substr($raw_property_names, strlen($loader_name . '_by_')) );
+            $order_criteria = static::extract_properties( $raw_order_criteria );
+        }
         $include = (isset($args[count($property_names)])) ? $args[count($property_names)] : false;
-        return static::$loader_name(static::build_where_clause($property_names, $args), $include);               
+        return static::$loader_name(static::build_where_clause($property_names, $args, $order_criteria), $include);               
     } // function loader
 
 
