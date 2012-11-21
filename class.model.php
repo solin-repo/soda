@@ -998,6 +998,10 @@ class model {
         $this->timemodified = time();
         if ($record_id || (property_exists($this, 'id') && $this->id && $this->id != '') ) {
             if ($record_id) $this->id = $record_id;
+
+            // Due to Moodle 19 Bug, id should be INT
+            $this->id = (int)$this->id;
+
             if (!update_record($class::table_name(), $this)) return false;
             return $this->id;
         }
