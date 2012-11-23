@@ -355,6 +355,40 @@ class controller {
 
 
     /**
+     * Wrapper function for controller#get_url
+     *
+     * @param  string $parameter_string  Querystring parameters
+     * @return string                    Returns a complete url
+     */
+    function url_to($parameter_string = '') {
+        return $this->get_url($parameter_string);
+    } // function url_to
+
+
+    /**
+     * Returns an html string containing a hyperlink.
+     *
+     * Example:
+     *
+     * <?= $this->link_to('drives_match', get_string('drives_match', 'yourmod'), "job_id={$job->id}") ?>
+     *
+     * Returns:
+     *
+     * <a href="/mod/yourmod/index.php?id=64&action=drives_match&job_id=152&controller=job">Hyperdrive Signature Matches</a>
+     *
+     * @param  string $action            Name of the action to link to
+     * @param  string $label             Text to display in the link
+     * @param  string $parameter_string  Querystring parameters
+     * @return string                    Returns a complete hyperlink
+     */
+    function link_to($action, $label, $parameter_string = '') {
+        $parameter_string = ($parameter_string == '') ? "action=$action" : "action=$action&$parameter_string";               
+        return "<a href='{$this->get_url($parameter_string)}'>$label</a>";
+    } // function link_to
+
+
+
+    /**
      * Creates a querystring.
      * If you omit the parameters string, the querystring will consist of just the id for the module.
      *
@@ -435,7 +469,7 @@ class controller {
         $parameters_string = (count($quoted_parameters)) ? join(',', $quoted_parameters) . ',' : '';
         return "post_to_url('$this->base_url',
                 { $parameters_string 'controller': '$this->model_name', 'id': '$id', 'action': '$action' })"; 
-    } // function post_to_url
+    } // function post_to_url_js
 
 
     /**
