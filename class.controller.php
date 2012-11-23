@@ -80,6 +80,12 @@ class controller {
 
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
 
+		$this->ajax_request = false;
+
+		$_headers = getallheaders();
+		if (array_key_exists('X-Requested-With', $_headers) && $_headers['X-Requested-With'] == 'XMLHttpRequest') {
+			$this->ajax_request = true;
+		}
     } // function __construct
 
 

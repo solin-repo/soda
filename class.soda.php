@@ -150,9 +150,9 @@ class soda {
         $class = $controller . "_controller";
         $instance = new $class($mod_name, ${$mod_name}->id, $action);
         $instance->set_helpers(array($general_helper, $specific_helper));
-        $instance->$action($record_id);               
-        $this->redirect = $instance->redirect;
+        $instance->$action($record_id);
         $instance->after_action();
+        $this->redirect = $instance->redirect;
     } // function dispatch
 
 
