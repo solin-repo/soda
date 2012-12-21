@@ -501,20 +501,24 @@ class model {
      * @return array
      */
     public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
-        global $CFG;
         $connection = static::get_connection_object();
         $prefix = $connection->get_prefix();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
-        if (! $recordset = $connection->get_recordset_sql("SELECT *
-                                                   FROM {$prefix}" . static::table_name() . " 
-                                                   $where",
-                                                   $params,
-                                                   $limitfrom, $limitnum) ) return;
+        $sql = "SELECT * FROM {$prefix}" . static::table_name() . " $where";
+        $objects = static::base_load($sql, $params = null, $limitfrom = null, $limitnum = null);
+        if ($include) $objects = static::load_associations($objects, $include);
+        return $objects;
+    } // function load_all
+
+
+    public static function base_load($sql, $params = null, $limitfrom = null, $limitnum = null) {
+        global $CFG;
+        $connection = static::get_connection_object();
+        if (! $recordset = $connection->get_recordset_sql($sql, $params, $limitfrom, $limitnum) ) return;
         $objects = static::convert_to_objects($recordset);
         $recordset->close();
-        if ($include) $objects = static::load_associations($objects, $include);
         return $objects;       
-    } // function load_all
+    } // function base_load
 
 
     /**
@@ -547,7 +551,7 @@ class model {
 
 
     /**
-     * Calls save method on each object in array $objects.
+     * Calls save method on each object in array $objects (insert operation if no id is present, update otherwise)
      * The default implementation for model::save is to perform a validation first. 
      * If this fails, then no actual save takes place for that object. All other valid objects
      * are still saved.
@@ -883,7 +887,8 @@ class model {
 
 
     /**
-     * Returns all values for the property $property from $collection
+     * Returns all values for the property $property from $collection (will return an empty
+     * element if the property does not exist at all for a given item)
      *
      * @param  string     $property     Name of the property we are looking for
      * @param  array      $collection   Array of items to search through
