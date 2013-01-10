@@ -550,6 +550,29 @@ class controller {
     } // function get_url
 
 
+    /**
+     * Returns an html string containing a hyperlink. Uses the current model to derive the controller name, 
+     * unless a controller is specified in the parameter_string argument.
+     *
+     * Example:
+     *
+     * <?= $this->link_to('drives_match', get_string('drives_match', 'yourmod'), "job_id={$job->id}") ?>
+     *
+     * Returns:
+     *
+     * <a href="/mod/yourmod/index.php?id=64&action=drives_match&job_id=152&controller=job">Hyperdrive Signature Matches</a>
+     *
+     * @param  string $action            Name of the action to link to
+     * @param  string $label             Text to display in the link
+     * @param  string $parameter_string  Querystring parameters
+     * @return string                    Returns a complete hyperlink
+     */
+    function link_to($action, $label, $parameter_string = '') {
+        $parameter_string = ($parameter_string == '') ? "action=$action" : "action=$action&$parameter_string";               
+        return "<a href='{$this->get_url($parameter_string)}'>$label</a>";
+    } // function link_to
+
+
 
     /**
      * Creates a querystring.
