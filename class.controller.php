@@ -80,13 +80,28 @@ class controller {
 
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
 
+        $this->detect_ajax_request();
+    } // function __construct
+
+
+    function detect_ajax_request() {
+                
         $this->ajax_request = false;
 
-        $_headers = getallheaders();
-        if (array_key_exists('X-Requested-With', $_headers) && $_headers['X-Requested-With'] == 'XMLHttpRequest') {
+        if ( ($value = $this->get_ajax_header()) && ($value == 'XMLHttpRequest' || $value == 'XMLHttpRequest, XMLHttpRequest') ) {
             $this->ajax_request = true;
         }
-    } // function __construct
+    } // function detect_ajax_request
+
+
+    private function get_ajax_header() {
+        $headers = getallheaders();
+        if (array_key_exists('X-Requested-With', $headers)) return $headers['X-Requested-With']; 
+        if (array_key_exists('x-requested-with', $headers)) return $headers['x-requested-with']; 
+        return false;
+    } // function get_ajax_header
+
+
 
 
     public static function model_name($controller_name) {
@@ -372,7 +387,8 @@ class controller {
 
 
     /**
-     * Returns an html string containing a hyperlink.
+     * Returns an html string containing a hyperlink. Uses the current model to derive the controller name, 
+     * unless a controller is specified in the parameter_string argument.
      *
      * Example:
      *
