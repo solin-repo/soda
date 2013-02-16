@@ -318,7 +318,7 @@ class model {
 
         $association_objects = array();
         if ($through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" )) {
-            $association_objects = $association::load_all("id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+            $association_objects = $association::load_all(" id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
         }
         //exit(print_object($through_objects));
 
@@ -387,6 +387,7 @@ class model {
      */
     public static function sort_by_property(&$objects, $property, $order) {
         return usort($objects, function($a, $b) use ($property, $order) {
+            if (!$a || !$b) return 0;
             if ($a->$property == $b->$property ) return 0;
             if ($order == 'ASC') {
                 return ($a->$property < $b->$property) ? -1 : 1;
