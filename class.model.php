@@ -280,7 +280,8 @@ class model {
         $through_model = static::get_first($child_model);
         $model_name = get_called_class();
         $order = (isset($child_model[':order'])) ? $child_model[':order'] : false;
-        $model_name::load_association_through( $objects,  $association_model, $through_model, $order);
+        $scope = (isset($child_model[':scope'])) ? $child_model[':scope'] : false;
+        $model_name::load_association_through( $objects,  $association_model, $through_model, $order, $scope);
     } // function call_through
 
 
@@ -310,15 +311,17 @@ class model {
      * @param string $order       Property by which to sort the associated object
      * @return void
      */
-    public static function load_association_through($objects, $association, $through, $order = false) {
+    public static function load_association_through($objects, $association, $through, $order = false, $scope = false) {
         global $CFG, $soda_module_name;
         $model_name = get_called_class();
         include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association}.php");
         include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$through}.php");
 
         $association_objects = array();
+        $where = ($scope) ? static::build_where_clause($scope) : '';
+        if ($where != '') $where = "$where AND "; 
         if ($through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" )) {
-            $association_objects = $association::load_all(" id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+            $association_objects = $association::load_all(" $where id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
         }
         //exit(print_object($through_objects));
 
@@ -768,7 +771,7 @@ class model {
      * @param  array        $args            Array of values for the columns. If not provided, the parameter
      *                                       $properties must contain the values. (Optional) 
      * @param  array        $order_criteria  Array of order criteria to be used in ORDER BY clause. (Optional)
-     * @return string                        Returns a string containing a WHERE clause
+     * @return string                        Returns a string containing a WHERE clause or an empty string
      */
     public static function build_where_clause($properties = false, $args = false, $order_criteria = false) {
         $where_parts = array();
