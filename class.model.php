@@ -319,9 +319,9 @@ class model {
 
         $association_objects = array();
         $where = ($scope) ? static::build_where_clause($scope) : '';
-        if ($where != '') $where = "$where AND "; 
+        if ($where != '') $where = " $where AND "; 
         if ($through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" )) {
-            $association_objects = $association::load_all(" $where id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
+            $association_objects = $association::load_all("$where id IN (" . join(',', static::collect("{$association}_id", $through_objects)) .  ")" );
         }
         //exit(print_object($through_objects));
 
