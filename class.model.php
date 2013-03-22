@@ -501,11 +501,12 @@ class model {
      * @return array
      */
     public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
+        //print_object($params);
         $connection = static::get_connection_object();
         $prefix = $connection->get_prefix();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
         $sql = "SELECT * FROM {$prefix}" . static::table_name() . " $where";
-        $objects = static::base_load($sql, $params = null, $limitfrom = null, $limitnum = null);
+        $objects = static::base_load($sql, $params, $limitfrom, $limitnum);
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;
     } // function load_all

@@ -40,7 +40,8 @@ class student extends user {
      * @param   int     $course_id  id of the course for which to return the student users
      * @return  array   returns array of users
      */
-    static function load_by_course($course_id) {
+    static function load_by_course($course_id, $where = false) {
+        $where_clause = ($where) ? " AND $where " : '';
         return student::base_load(
             "SELECT u.*
              FROM {user} AS u
@@ -50,7 +51,8 @@ class student extends user {
              WHERE r.shortname = 'student' AND NOT EXISTS 
                 (SELECT ra2.userid 
                  FROM {role_assignments} AS ra2, {role} AS r2 
-                 WHERE ra2.userid = u.id AND ra2.roleid = r2.id AND r2.shortname NOT LIKE 'student')",
+                 WHERE ra2.userid = u.id AND ra2.roleid = r2.id AND r2.shortname NOT LIKE 'student')
+             $where_clause",
             array("course_id" => $course_id) ); 
     } // function load_by_course
 
