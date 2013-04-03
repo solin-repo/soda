@@ -78,7 +78,10 @@ class model {
      */
     public static function table_name() {
         if ( isset(static::$table_name) ) return static::$table_name;
-        return get_called_class();
+
+        //provision for class names with a namespace in front of it
+        $array = explode('\\', get_called_class());
+        return end($array);
     } // function table_name
 
 
