@@ -438,9 +438,16 @@ class soda {
     static function scale_used_anywhere($scaleid) {
         global $DB;
 
-        if ($scaleid and $DB->record_exists(get_called_class(), 'grade', -$scaleid)) {
-            return true;
-        } else {
+        try
+        {
+            if ($scaleid and $DB->record_exists(get_called_class(), array('grade'=> -$scaleid))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        catch (dml_exception $exception)
+        {
             return false;
         }
     }
