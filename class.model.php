@@ -1028,7 +1028,7 @@ class model {
     function delete() {
         $this->deleted = 1;
         if (! $this->id ) error("No record id found");
-        return $this->save_without_validation($record_id);
+        return $this->save_without_validation();
     } // function delete
 
 
