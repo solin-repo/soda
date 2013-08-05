@@ -501,27 +501,54 @@ class model {
      * @param array  $params            Array of sql parameters (optional)
      * @param int    $limitfrom         Return a subset of records, starting at this point (optional, required if $limitnum is set).
      * @param int    $limitnum          Return a subset comprising this many records (optional, required if $limitfrom is set).
+     * @param string $fields            An optional SQL fragment specifying the columns. Defaults to *.
      * @return array
      */
-    public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null) {
-        //print_object($params);
+    public static function load_all($where_clause = false, $include = false, $params = null, $limitfrom = null, $limitnum = null, $fields = '*') {
         $connection = static::get_connection_object();
         $prefix = $connection->get_prefix();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
-        $sql = "SELECT * FROM {$prefix}" . static::table_name() . " $where";
-        $objects = static::base_load($sql, $params, $limitfrom, $limitnum);
+        $sql = "SELECT $fields FROM {$prefix}" . static::table_name() . " $where";
+        $objects = static::base_load($sql, $params = null, $limitfrom = null, $limitnum = null);
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;
     } // function load_all
 
 
-    public static function base_load($sql, $params = null, $limitfrom = null, $limitnum = null) {
-        global $CFG;
+    /**
+     * Executes an sql query and returns the results by applying a supplied anonymous function.
+     *
+     * Example usage: see base_load
+     *
+     * @param string    $sql                    Complete SQL query - also takes Moodle DB API type parameters
+     * @param function  $recordset_processor    Anonymous function which should contain an iterator, process the recordset and return the result
+     * @param array     $params                 Array of sql parameters (optional)
+     * @param int       $limitfrom              Return a subset of records, starting at this point (optional, required if $limitnum is set).
+     * @param int       $limitnum               Return a subset comprising this many records (optional, required if $limitfrom is set).
+     * @return array                            Returns an array of results, as determined by the $recordset_processor
+     */
+    public static function raw_load($sql, $recordset_processor, $params = null, $limitfrom = null, $limitnum = null) {
         $connection = static::get_connection_object();
         if (! $recordset = $connection->get_recordset_sql($sql, $params, $limitfrom, $limitnum) ) return;
-        $objects = static::convert_to_objects($recordset);
+        $results = $recordset_processor($recordset);
         $recordset->close();
-        return $objects;       
+        return $results;       
+    } // function raw_load
+
+
+    /**
+     * Executes an sql query and returns the results as an array of objects.
+     *
+     * Example usage: see load_all
+     *
+     * @param string    $sql                    Complete SQL query - also takes Moodle DB API type parameters
+     * @param array     $params                 Array of sql parameters (optional)
+     * @param int       $limitfrom              Return a subset of records, starting at this point (optional, required if $limitnum is set).
+     * @param int       $limitnum               Return a subset comprising this many records (optional, required if $limitfrom is set).
+     * @return array                            Returns an array of objects
+     */
+    public static function base_load($sql, $params = null, $limitfrom = null, $limitnum = null) {
+        return static::raw_load($sql, function($recordset) {return model::convert_to_objects($recordset);}, $params, $limitfrom, $limitnum);
     } // function base_load
 
 
