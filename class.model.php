@@ -509,7 +509,7 @@ class model {
         $prefix = $connection->get_prefix();
         $where = ($where_clause) ? "WHERE $where_clause " : "";
         $sql = "SELECT $fields FROM {$prefix}" . static::table_name() . " $where";
-        $objects = static::base_load($sql, $params = null, $limitfrom = null, $limitnum = null);
+        $objects = static::base_load($sql, $params, $limitfrom, $limitnum);
         if ($include) $objects = static::load_associations($objects, $include);
         return $objects;
     } // function load_all

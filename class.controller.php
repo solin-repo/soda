@@ -677,6 +677,16 @@ class controller {
         $this->_nav_link = $nav_link;
     }
 
+
+    static function get_limitfrom($page_number, $page_size) {
+        return ($page_size * ($page_number - 1));
+    } // function get_limitfrom
+
+
+    static function max_page_size($page_size, $total_records) {
+        return ceil($total_records / $page_size);
+    } // function get_max_page_size
+
 } // class controller
 
 ?>
