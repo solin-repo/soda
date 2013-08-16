@@ -548,7 +548,8 @@ class model {
      * @return array                            Returns an array of objects
      */
     public static function base_load($sql, $params = null, $limitfrom = null, $limitnum = null) {
-        return static::raw_load($sql, function($recordset) {return model::convert_to_objects($recordset);}, $params, $limitfrom, $limitnum);
+        $class = get_called_class();
+        return static::raw_load($sql, function($recordset) use ($class) {return $class::convert_to_objects($recordset);}, $params, $limitfrom, $limitnum);
     } // function base_load
 
 
