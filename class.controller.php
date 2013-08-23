@@ -687,6 +687,15 @@ class controller {
         return ceil($total_records / $page_size);
     } // function get_max_page_size
 
+
+     /**
+     * Returns true if the currently logged in user is admin.
+     *
+     * @return boolean Returns true if admin, otherwise false
+     */   
+    static function is_admin() {
+        return has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM));        
+    } // function is_admin
 } // class controller
 
 ?>
