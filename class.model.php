@@ -372,14 +372,15 @@ class model {
      * @return array                     Returns sorted array
      */
     public static function sort_by_property(&$objects, $property, $order) {
-        return usort($objects, function($a, $b) use ($property, $order) {
+        usort($objects, function($a, $b) use ($property, $order) {
             if ($a->$property == $b->$property ) return 0;
             if ($order == 'ASC') {
                 return ($a->$property < $b->$property) ? -1 : 1;
             } else {
                 return ($a->$property > $b->$property) ? -1 : 1;
             }
-        });               
+        });
+        return $objects;        
     } // function sort_by_property
 
 
@@ -392,7 +393,7 @@ class model {
      * @return array                     Returns sorted array
      */
     public static function sort_by_method(&$objects, $method, $order) {
-        return usort($objects, function($a, $b) use ($method, $order) {
+        usort($objects, function($a, $b) use ($method, $order) {
             if ($a->$method() == $b->$method() ) return 0;
             if ($order == 'ASC') {
                 return ($a->$method() < $b->$method()) ? -1 : 1;
@@ -400,6 +401,7 @@ class model {
                 return ($a->$method() > $b->$method()) ? -1 : 1;
             }
         });               
+        return $objects;
     } // function sort_by_method
 
 
