@@ -135,7 +135,7 @@ class helper {
      * <ul id='todotwo_list'>
      * <? 
      * foreach($items as $item) { 
-     *     include($this->get_partial('single_item'));
+     *     include($this->get_partial_path('single_item'));
      * } ?>
      * </ul>
      * <?= $this->ajax_form(array('action' => $this->get_url('action=test')), 'append', '#todotwo_list', function() { ?>
