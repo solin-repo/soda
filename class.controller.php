@@ -51,6 +51,7 @@ class controller {
     var $no_layout = false;
     var $overriding_no_layout = false;
     var $user;
+    var $instance_id; // Id of the module record itself (as opposed to the course_module.id)
     var $auto_replace_vars = false; // replaces template variables like {$username}, {$city}, {$user.firstname}
     protected $_moodle_header = '';
     protected $_page_title;
@@ -82,8 +83,7 @@ class controller {
         $this->base_url = $this->create_base_url();
         $instance_id_name = "{$this->mod_name}_id";
         $this->action = ($action) ? $action : optional_param('action', 'index', PARAM_RAW);
-        $this->{$instance_id_name} = $mod_instance_id;
-
+        $this->{$instance_id_name} = $this->instance_id = $mod_instance_id;
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
 
     } // function __construct
