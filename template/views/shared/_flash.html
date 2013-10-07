@@ -1,0 +1,6 @@
+<? if ($message = $this->get_message('notification')) { ?>
+    <div id='flash' class='notification'><?= $message ?></div>
+<? } ?>
+<? if ($message = $this->get_message('error')) { ?>
+    <div id='flash' class='error'><?= $message ?></div>
+<? } ?>

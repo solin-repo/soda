@@ -21,6 +21,8 @@ class template_controller extends controller {
 
 
     function create() {
+        // To use the 'flash' message, provide a 3rd argument to redirect_to, containing the actual message:
+        // $this->redirect_to( 'index', array('saved' => 1), array('notification' => get_string('message_saved', 'template')));
     } // function create
 
 } // class template_controller 
