@@ -1,6 +1,6 @@
 <? if ($message = $this->get_message('notification')) { ?>
-    <div id='flash' class='notification'><?= $message ?></div>
+    <div id='flash-notification' class='flash notification'><?= $message ?></div>
 <? } ?>
 <? if ($message = $this->get_message('error')) { ?>
-    <div id='flash' class='error'><?= $message ?></div>
+    <div id='flash-error' class='flash error'><?= $message ?></div>
 <? } ?>
