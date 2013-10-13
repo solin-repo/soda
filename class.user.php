@@ -64,20 +64,25 @@ class user extends model {
     } // function full_name
 
 
-    static function load_by_capability_and_course_id($capability, $course_id) {
-         return student::base_load(
+    /**
+     * Loads users who have a specific capability in the context of a given course.
+     */
+    static function load_by_capability_and_course_id($capability, $course_id, $current_group_id = false, $order_columns = "u.firstname, u.lastname") {
+         $group_sql = ((boolean) $current_group_id) ? sprintf(" u.id IN (SELECT gm.userid FROM {groups_members} AS gm WHERE gm.groupid = %d ) AND ", $current_group_id) : "";
+         return self::base_load(
             "SELECT u.*
              FROM {user} AS u
              INNER JOIN {role_assignments} ra ON ra.userid = u.id
              INNER JOIN {context} c ON c.id = ra.contextid AND c.contextlevel = '50' AND c.instanceid = ?
              INNER JOIN {role_capabilities} AS rc ON rc.roleid = ra.roleid
-             WHERE rc.capability LIKE ? AND u.deleted = 0 AND NOT EXISTS
+             WHERE $group_sql rc.capability LIKE ? AND u.deleted = 0 AND NOT EXISTS
                  (SELECT u2.*
                   FROM {user} AS u2
                   INNER JOIN {role_assignments} ra2 ON ra2.userid = u2.id
                   INNER JOIN {context} c2 ON c2.id = ra2.contextid AND c2.contextlevel = '50' AND c2.instanceid = ?
                   INNER JOIN {role_capabilities} AS rc2 ON rc2.roleid = ra2.roleid
-                  WHERE rc2.capability NOT LIKE ? AND u2.id = u.id AND rc2.roleid <> rc.roleid)",
+                  WHERE rc2.capability NOT LIKE ? AND u2.id = u.id AND rc2.roleid <> rc.roleid)
+            ORDER BY $order_columns",
             array($course_id, $capability, $course_id, $capability) );                
     } // function load_by_capability_and_course_id 
 }
