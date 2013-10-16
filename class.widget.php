@@ -18,7 +18,7 @@ class widget {
      *                               class is used.
      * @return string The processed html file is returned as a string
      */
-    static function display($mod_name, $data_array = array(), $partial_name = false) {
+    static function display($mod_name, $data_array = array(), $partial_name = false, $plugin_type = 'mod') {
         global $CFG;
         $partial_filename = ($p = $partial_name) ? $p : get_called_class(); 
 
@@ -26,15 +26,15 @@ class widget {
             $$variable_name = $value;
         }
         ob_start();
-        include_once(self::get_path($partial_name, $mod_name));
+        include_once(self::get_path($partial_name, $mod_name, $plugin_type));
         $contents = ob_get_clean();
         return $contents;
     } // function display
 
 
-    static function get_path($partial_name, $mod_name) {
+    static function get_path($partial_name, $mod_name, $plugin_type = 'mod') {
         global $CFG;
-        $path = "{$CFG->dirroot}/mod/$mod_name/widgets/{$partial_name}.html";
+        $path = "{$CFG->dirroot}/$plugin_type/$mod_name/widgets/{$partial_name}.html";
         if (!file_exists($path)) error("could not find path $path");
         return $path;
     } // function get_path

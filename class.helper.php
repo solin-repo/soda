@@ -286,20 +286,21 @@ class helper {
      */
     function get_partial_path($partial) {
         global $CFG, $soda_module_name;
+        $plugin_type = $this->controller->plugin_type;
 
         if (strpos($partial, '/') !== false) {
             if (file_exists($partial)) {
                 return $partial;
             }
         }
-        if (file_exists("{$CFG->dirroot}/mod/$soda_module_name/views/{$this->model_name}/_{$partial}.html")) {
-            return "{$CFG->dirroot}/mod/$soda_module_name/views/{$this->model_name}/_{$partial}.html";
+        if (file_exists("{$CFG->dirroot}/$plugin_type/$soda_module_name/views/{$this->model_name}/_{$partial}.html")) {
+            return "{$CFG->dirroot}/$plugin_type/$soda_module_name/views/{$this->model_name}/_{$partial}.html";
         }
         $parent_views = static::model_name(get_parent_class($this->controller));
-        if (file_exists("{$CFG->dirroot}/mod/$soda_module_name/views/{$parent_views}/_{$partial}.html")) {
-            return "{$CFG->dirroot}/mod/$soda_module_name/views/{$parent_views}/_{$partial}.html";
+        if (file_exists("{$CFG->dirroot}/$plugin_type/$soda_module_name/views/{$parent_views}/_{$partial}.html")) {
+            return "{$CFG->dirroot}/$plugin_type/$soda_module_name/views/{$parent_views}/_{$partial}.html";
         }
-        return "{$CFG->dirroot}/mod/$soda_module_name/views/shared/_{$partial}.html";
+        return "{$CFG->dirroot}/$plugin_type/$soda_module_name/views/shared/_{$partial}.html";
     } // function get_partial_path
 
 

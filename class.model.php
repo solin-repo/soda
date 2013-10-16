@@ -58,6 +58,8 @@ class model {
     );
     static $table_relations = false;
     static $connection_object = false;
+    static $plugin_type = 'mod';
+
 
     /**
      * Instantiates model class with an array of property-value pairs. 
@@ -177,7 +179,7 @@ class model {
                 continue;
             }
             if (is_string($parent_model)) {
-                include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$parent_model}.php");
+                include_once("{$CFG->dirroot}/".static::get_plugin_type()."/{$soda_module_name}/models/{$parent_model}.php");
                 // This should actually be done through the model class settings of the association class,
                 // not as a parameter in the 'load' function call
                 $foreign_key = static::construct_foreign_key($parent_model);
@@ -187,7 +189,7 @@ class model {
                 static::attach_associations($objects, $parents, false, $foreign_key);
                 continue;
             }
-            include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$child_model}.php");
+            include_once("{$CFG->dirroot}/".static::get_plugin_type()."/{$soda_module_name}/models/{$child_model}.php");
             $foreign_key = static::construct_foreign_key($child_model);
             $children = $child_model::load_all("{$foreign_key} IN (" . join(',', static::collect('id', $objects)) .  ")");
             static::attach_associations($objects, $children, false, $foreign_key);
@@ -223,7 +225,7 @@ class model {
 
         //$restrictions = static::get_first($child_model[':scope']);
         $restrictions = $child_model[':scope'];
-        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association_model}.php");
+        include_once("{$CFG->dirroot}/".static::get_plugin_type()."/{$soda_module_name}/models/{$association_model}.php");
         $order = (isset($child_model[':order'])) ? " ORDER BY {$child_model[':order']} " : "";
         $association_name = (isset($child_model[':association_name'])) ? $child_model[':association_name'] : false;
         $foreign_key = static::construct_foreign_key($association_model);
@@ -319,8 +321,8 @@ class model {
     public static function load_association_through($objects, $association, $through, $order = false) {
         global $CFG, $soda_module_name;
         $model_name = get_called_class();
-        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$association}.php");
-        include_once("{$CFG->dirroot}/mod/{$soda_module_name}/models/{$through}.php");
+        include_once("{$CFG->dirroot}/".static::get_plugin_type()."/{$soda_module_name}/models/{$association}.php");
+        include_once("{$CFG->dirroot}/".static::get_plugin_type()."/{$soda_module_name}/models/{$through}.php");
 
         $association_objects = array();
         if ($through_objects = $through::load_all("{$model_name}_id IN (" . join(',', static::collect('id', $objects)) .  ")" )) {
@@ -1147,6 +1149,23 @@ class model {
     function get_first_error($field = false) {
         return soda_error::get_first_error($this, $field);
     } // function get_first_error
+
+
+    /**
+     * Retrieve plugin type as a string
+     *
+     * Currently, only two types of plugins are supported: mod and report
+     */
+    static function get_plugin_type() {
+        global $CFG;
+        $reflection = new ReflectionClass( get_called_class() );
+        // get path relative to webroot
+        $location = substr($reflection->getFileName(), strlen($CFG->dirroot));
+        foreach(soda::$supported_plugins as $plugin) {
+            if (strpos($location, $plugin) !== false) return $plugin;
+        }
+        return static::$plugin_type;
+    } // function get_plugin_type
 
 } // class model 
 

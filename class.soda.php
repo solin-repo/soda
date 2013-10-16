@@ -93,6 +93,8 @@ class soda {
     var $no_layout = false;
     var $overriding_no_layout = false;
     var $mod_name = false;
+    var $plugin_type = 'mod';
+    static $supported_plugins = array('mod', 'report');
 
     /**
      * Instantiates soda class and creates all standard Moodle module library functions.
@@ -102,8 +104,25 @@ class soda {
     function __construct() {
         $this->create_mod_library_functions( get_called_class() );
         $this->mod_name = get_called_class();
+        $this->plugin_type = $this->determine_plugin_type();
     } // function __construct
 
+
+    /**
+     * Retrieve plugin type as a string
+     *
+     * Currently, only two types of plugins are supported: mod and report
+     */
+    function determine_plugin_type() {
+        global $CFG;
+        $reflection = new ReflectionClass( get_called_class() );
+        // get path relative to webroot
+        $location = substr($reflection->getFileName(), strlen($CFG->dirroot));
+        foreach(self::$supported_plugins as $plugin) {
+            if (strpos($location, $plugin) !== false) return $plugin;
+        }
+        return $this->plugin_type;
+    } // function determine_plugin_type
 
     /**
      * Entry point of any Soda based Moodle module.
@@ -147,18 +166,19 @@ class soda {
         $controller = ($overriding_controller) ? $overriding_controller : $controller;
         $helpers = array($this->get_helper($mod_name), $this->get_helper($mod_name, $controller));
 
-        if (! controller::load_file($controller, $mod_name)) {
+        if (! controller::load_file($controller, $mod_name, $this->plugin_type)) {
             // no specific controller - let's fallback to default
-            $instance = new controller($mod_name, ${$mod_name}->id, $action);
+            $instance = new controller($mod_name, ${$mod_name}->id, $action, $this->plugin_type);
             $instance->overriding_no_layout = $this->overriding_no_layout;
             return $this->perform_action($instance, $action, $helpers);
         }
         $record_id = optional_param("{$controller}_id", false, PARAM_INT);
-        if (file_exists("{$CFG->dirroot}/mod/$mod_name/models/{$controller}.php")) {
-            include_once("{$CFG->dirroot}/mod/$mod_name/models/{$controller}.php");
+        if (file_exists("{$CFG->dirroot}/{$this->plugin_type}/$mod_name/models/{$controller}.php")) {
+            include_once("{$CFG->dirroot}/{$this->plugin_type}/$mod_name/models/{$controller}.php");
         }
         $class = $controller . "_controller";
-        $instance = new $class($mod_name, ${$mod_name}->id, $action);
+        $mod_instance_id = (is_object(${$mod_name}) && property_exists(${$mod_name}, 'id')) ? ${$mod_name}->id : 0; // bit of a hack to make reports work
+        $instance = new $class($mod_name, $mod_instance_id, $action, $this->plugin_type);
         $instance->overriding_no_layout = $this->overriding_no_layout;
         return $this->perform_action($instance, $action, $helpers, $record_id);
     } // function dispatch
@@ -198,9 +218,9 @@ class soda {
         $helper = false;
         $path = ($controller) ? "{$controller}/" : "";
         $helper_class_name = ($controller) ? "{$controller}_helper" : "{$mod_name}_helper"  ;
-        if (file_exists("{$CFG->dirroot}/mod/$mod_name/helpers/{$path}class.{$helper_class_name}.php")) {
-            include_once("{$CFG->dirroot}/mod/$mod_name/helpers/{$path}class.{$helper_class_name}.php");
-            //if (!$controller) exit("{$CFG->dirroot}/mod/$mod_name/helpers/{$path}class.{$helper_class_name}.php");
+        if (file_exists("{$CFG->dirroot}/{$this->plugin_type}/$mod_name/helpers/{$path}class.{$helper_class_name}.php")) {
+            include_once("{$CFG->dirroot}/{$this->plugin_type}/$mod_name/helpers/{$path}class.{$helper_class_name}.php");
+            //if (!$controller) exit("{$CFG->dirroot}/{$this->plugin_type}/$mod_name/helpers/{$path}class.{$helper_class_name}.php");
             $helper = new $helper_class_name();
         }               
         return $helper;

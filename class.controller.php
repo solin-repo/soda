@@ -53,6 +53,7 @@ class controller {
     var $user;
     var $instance_id; // Id of the module record itself (as opposed to the course_module.id)
     var $auto_replace_vars = false; // replaces template variables like {$username}, {$city}, {$user.firstname}
+    var $plugin_type;
     protected $_moodle_header = '';
     protected $_page_title;
     protected $_nav_title;
@@ -75,8 +76,9 @@ class controller {
      * @param string  $action           Name of the method to be invoked later on
      * @return void
      */
-    function __construct($mod_name, $mod_instance_id, $action = false) {
+    function __construct($mod_name, $mod_instance_id, $action = false, $plugin_type = 'mod') {
         global $USER, $course, $compass;
+        $this->plugin_type = $plugin_type;
         $this->course = $course;
         $this->mod_name = $mod_name;
         $this->model_name = static::model_name(get_called_class()); 
@@ -102,10 +104,10 @@ class controller {
      * @param string  $mod_name         Name of the Moodle module where the controller resides
      * @return void
      */
-    static function load_file($controller_name, $mod_name) {
+    static function load_file($controller_name, $mod_name, $plugin_type) {
         global $CFG;
-        if (!file_exists("{$CFG->dirroot}/mod/$mod_name/controllers/{$controller_name}.php")) return false;
-        return include_once("{$CFG->dirroot}/mod/$mod_name/controllers/$controller_name.php");
+        if (!file_exists("{$CFG->dirroot}/{$plugin_type}/$mod_name/controllers/{$controller_name}.php")) return false;
+        return include_once("{$CFG->dirroot}/{$plugin_type}/$mod_name/controllers/$controller_name.php");
     } // function load_file
 
 
@@ -120,7 +122,7 @@ class controller {
      * @return void
      */
     function load($controller_name) {
-        return static::load_file($controller_name, $this->mod_name);
+        return static::load_file($controller_name, $this->mod_name, $this->plugin_type);
     } // function load
 
 
@@ -220,7 +222,7 @@ class controller {
         global $context, $USER;
         if (!$user) $user = $USER;
         $model_name = ($model_name !== false ) ? $model_name : $this->model_name;
-        return has_capability("mod/{$this->mod_name}:$capability_short{$model_name}", $context, $user->id); 
+        return has_capability("{$this->plugin_type}/{$this->mod_name}:$capability_short{$model_name}", $context, $user->id); 
     } // function check_capability
 
 
@@ -368,7 +370,8 @@ class controller {
 
 
         ob_start(); // Start output buffering
-        $str_mod_name_singular = get_string('modulename', $mod_name);
+        $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
+        $str_mod_name_singular = get_string('modulename', $prefix.$mod_name);
         /*
         $navigation = build_navigation( get_string('modulename', $mod_name) );
         print_header_simple(format_string($mod_name), "", $navigation, "", "", true,
@@ -391,13 +394,14 @@ class controller {
      */
     public function set_page_variables($mod_name, $course = false) {
         global $PAGE, $cm;        
-        $query_array = array('id' => $cm->id, 'action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
+        $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
+        if (is_object($cm)) $query_array['id'] = $cm->id; // reports don't have $cm objects
         if (isset($_REQUEST)) {
             $query_array = $_REQUEST;
         }
         $query_array = self::remove_block_parameters(self::flatten_array($query_array));
 
-        $PAGE->set_url("/mod/$mod_name/index.php", $query_array);
+        $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
         if ($course) $PAGE->set_heading(format_string($course->fullname));
         
         if (isset($this->_page_title)) {
@@ -408,6 +412,7 @@ class controller {
             $PAGE->navbar->ignore_active();
             $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
         }
+        if ($this->plugin_type == 'report') $PAGE->set_pagelayout('report');
     } // function set_page_variables
 
 
@@ -500,16 +505,16 @@ class controller {
         //include correct view
         $trace = debug_backtrace();
         $this->view = ($view) ? $view : $trace[1]['function'];
-        $view_path = "{$CFG->dirroot}/mod/{$this->mod_name}/views/{$this->model_name}/{$this->view}.html";
+        $view_path = "{$CFG->dirroot}/{$this->plugin_type}/{$this->mod_name}/views/{$this->model_name}/{$this->view}.html";
         if (! file_exists($view_path)) {
             $parent_views = static::model_name(get_parent_class($this));
-            $view_path = "{$CFG->dirroot}/mod/{$this->mod_name}/views/{$parent_views}/{$this->view}.html";
+            $view_path = "{$CFG->dirroot}/{$this->plugin_type}/{$this->mod_name}/views/{$parent_views}/{$this->view}.html";
         }
         if (! $template) {
             include_once($view_path);
             return;
         }
-        $template_path = "{$CFG->dirroot}/mod/$this->mod_name/views/template.html";
+        $template_path = "{$CFG->dirroot}/{$this->plugin_type}/$this->mod_name/views/template.html";
         if (file_exists($template_path)) {
             include_once($template_path);
             return;
@@ -596,7 +601,7 @@ class controller {
      */
     function create_base_url() {
         global $CFG;
-        return "{$CFG->wwwroot}/mod/{$this->mod_name}/index.php";
+        return "{$CFG->wwwroot}/{$this->plugin_type}/{$this->mod_name}/index.php";
     } // function create_base_url 
 
 
