@@ -133,11 +133,18 @@ class soda {
     function display($no_layout = false, $activity_id = false, $overriding_controller = false, $overriding_action = false) {            
         $this->overriding_no_layout = $no_layout;
         $mod_name = get_called_class();
-        global ${$mod_name}, $CFG, $cm, $course, $soda_module_name;
+        global ${$mod_name}, $CFG, $cm, $course, $soda_module_name, $DB, $id;
+        $id = optional_param('id', 0, PARAM_INT); // Course Module ID in case of mods, or course_id in case of reports (sorry, default Moodle stuff...)
         $soda_module_name = $mod_name;
-        ${$mod_name} = static::get_module_instance($activity_id);
-        static::set_variables($mod_name);
-
+        switch($this->plugin_type) {
+            case 'mod':
+                ${$mod_name} = static::get_module_instance($activity_id);
+                static::set_variables($mod_name);
+                break;
+            case 'report':
+                $course = $DB->get_record( 'course', array('id' => $id) );
+                break;
+        }
         // TODO: call default module->index() to show 'all instances of module'
         $action = optional_param('action', 'index', PARAM_RAW);
         $action = ($overriding_action) ? $overriding_action : $action;
@@ -241,7 +248,8 @@ class soda {
         // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
-        if (! $this->overriding_no_layout) require_course_login($course, true, $cm);
+        if (! $this->overriding_no_layout) require_login($course);
+        //if (! $this->overriding_no_layout) require_course_login($course, true, $cm);
 
         ob_start(); // Start output buffering
         $controller = $this->dispatch($action, $overriding_controller);
@@ -484,7 +492,6 @@ class soda {
     static function get_module_instance($activity_id = false) { 
         global $course, $cm, $id, $DB;
         
-        $id = optional_param('id', 0, PARAM_INT); // Course Module ID
 
         if ($activity_id) {
             $mod_instance  = $DB->get_record(get_called_class(), array('id' => $activity_id), '*', MUST_EXIST);
