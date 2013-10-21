@@ -915,9 +915,10 @@ class model {
      *
      * @param  function     $compare      Function which returns the item that matches the criterion specified in the function body
      * @param  array        $collection   Array of items to search through
-     * @return mixed                      Returns item of mixed type or false
+     * @return array                      Returns array of items of mixed type, or false 
      */
     public static function find_all($compare, $collection) {
+        // if array_filter does not yield any results, php returns false
         return array_filter($collection, $compare);
     } // function find_all
 
@@ -935,6 +936,26 @@ class model {
             if (isset($item->$property)) return $item->$property; 
         }, $collection);
     } // function collect
+
+
+
+    /**
+     * Returns an associative array with properties extracted from an object (or array)
+     *
+     * @param  object   $object      Object to extract 
+     * @param  array    $columns     Array of strings identifying the columns to be extracted
+     * @return array                 Associative array with properties
+     */
+    public static function extract($object, $columns) {
+        if (! ($columns && (is_array($columns) || (is_object($columns))) )) {
+            throw new Exception("Argument $columns should be an object or an array");
+        }
+        $properties = array();
+        foreach($columns as $column) {
+            $properties[$column] = $object->$column;
+        }
+        return $properties;
+    } // function extract
 
 
     /**
