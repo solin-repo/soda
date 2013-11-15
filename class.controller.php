@@ -88,7 +88,7 @@ class controller {
         $this->action = ($action) ? $action : optional_param('action', 'index', PARAM_RAW);
         $this->{$instance_id_name} = $this->instance_id = $mod_instance_id;
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
-        $this->course_id = $this->course->id;
+        if (isset($this->course)) $this->course_id = $this->course->id;
 
     } // function __construct
 
