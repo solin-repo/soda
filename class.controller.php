@@ -365,10 +365,10 @@ class controller {
      * @return  string              Returns Moodle layout header
      */
 	protected function _prepare_moodle_header($mod_name) {
-        global $cm, $course, $CFG, $OUTPUT, $context;
+        global $cm, $course, $CFG, $OUTPUT, $context, $PAGE;
 
         if ($this->overriding_no_layout) return;
-        $this->set_page_variables($mod_name);
+        $this->set_page_variables($mod_name, $course);
 
 
         ob_start(); // Start output buffering
@@ -406,14 +406,18 @@ class controller {
         $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
         if ($course) $PAGE->set_heading(format_string($course->fullname));
         
+        $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
+        $PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);
-            $PAGE->set_heading($this->_page_title, 3);
         }
         if (isset($this->_nav_title)) {
             $PAGE->navbar->ignore_active();
             $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
         }
+
+        $PAGE->add_body_class("{$this->plugin_type}_{$this->mod_name}_{$this->model_name}");
+
         if ($this->plugin_type == 'report') $PAGE->set_pagelayout('report');
     } // function set_page_variables
 

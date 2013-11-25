@@ -258,7 +258,6 @@ class soda {
         }
         // retrieve the stored moodle header from the controller
         $header = $controller->get_moodle_header();
-
         echo $header;
         echo $content;
         $this->print_footer(get_called_class());
@@ -290,6 +289,7 @@ class soda {
 
     /**
      * Returns Moodle layout header
+     * WARNING: NOT USED ANYMORE - TO BE REMOVED IN SOME FUTURE VERSION
      *
      * @param   string  $mod_name   Name of the module
      * @return  string              Returns Moodle layout header
@@ -540,10 +540,10 @@ class soda {
          */
         
         if (isset($context)) return;
-        if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+        if (!$context = context_module::instance($cm->id)) {
             print_error('badcontext');
         }  
-        //$PAGE->set_context($context);
+        $PAGE->set_context($context);
     } // function set_variables
 
 
