@@ -269,8 +269,10 @@ class soda {
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
         if ($this->overriding_no_layout) return;
+        /*
         if ($this->plugin_type == 'mod') return require_course_login($course, true, $cm);
         require_login($course); 
+         */
     } // function set_page_variables
 
 
@@ -498,7 +500,6 @@ class soda {
     static function get_module_instance($activity_id = false) { 
         global $course, $cm, $id, $DB;
         
-
         if ($activity_id) {
             $mod_instance  = $DB->get_record(get_called_class(), array('id' => $activity_id), '*', MUST_EXIST);
             $course     = $DB->get_record('course', array('id' => $mod_instance->course), '*', MUST_EXIST);
@@ -511,7 +512,6 @@ class soda {
             error('You must specify a course_module ID or an instance ID');
         }
         $id = $cm->id;
-
         /*
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         global $PAGE;

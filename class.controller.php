@@ -396,6 +396,14 @@ class controller {
      */
     public function set_page_variables($mod_name, $course = false) {
         global $PAGE, $cm;        
+
+        if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
+
+        // This call CHANGES THE NAVBAR
+        $PAGE->set_cm($cm, $course); // set's up global $COURSE
+        $PAGE->set_course($course); // sets up global $COURSE
+            //$PAGE->set_pagelayout('incourse');
+
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
         if (is_object($cm)) $query_array['id'] = $cm->id; // reports don't have $cm objects
         if (isset($_REQUEST)) {
@@ -404,13 +412,16 @@ class controller {
         $query_array = self::remove_block_parameters(self::flatten_array($query_array));
 
         $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
-        if ($course) $PAGE->set_heading(format_string($course->fullname));
+        if ($course) {
+            $PAGE->set_heading(format_string($course->fullname));
+        }
         
         $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
         $PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);
         }
+
         if (isset($this->_nav_title)) {
             $PAGE->navbar->ignore_active();
             $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
@@ -418,7 +429,6 @@ class controller {
 
         $PAGE->add_body_class("{$this->plugin_type}_{$this->mod_name}_{$this->model_name}");
 
-        if ($this->plugin_type == 'report') $PAGE->set_pagelayout('report');
     } // function set_page_variables
 
 
