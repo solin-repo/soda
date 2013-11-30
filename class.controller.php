@@ -88,7 +88,7 @@ class controller {
         $this->action = ($action) ? $action : optional_param('action', 'index', PARAM_RAW);
         $this->{$instance_id_name} = $this->instance_id = $mod_instance_id;
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
-        if (isset($this->course)) $this->course_id = $this->course->id;
+        if (isset($this->course) && is_object($this->course)) $this->course_id = $this->course->id;
 
     } // function __construct
 
@@ -399,8 +399,9 @@ class controller {
 
         if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
 
+        if ($cm) $PAGE->set_cm($cm, $course); // sets up global $COURSE
+
         // This call CHANGES THE NAVBAR
-        $PAGE->set_cm($cm, $course); // set's up global $COURSE
         $PAGE->set_course($course); // sets up global $COURSE
             //$PAGE->set_pagelayout('incourse');
 
