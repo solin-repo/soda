@@ -403,7 +403,7 @@ class controller {
 
         // This call CHANGES THE NAVBAR
         $PAGE->set_course($course); // sets up global $COURSE
-            //$PAGE->set_pagelayout('incourse');
+        //$PAGE->set_pagelayout('incourse');
 
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
         if (is_object($cm)) $query_array['id'] = $cm->id; // reports don't have $cm objects
