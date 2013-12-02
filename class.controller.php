@@ -249,7 +249,8 @@ class controller {
      * @return void
      */
     function require_login($autologinguest = false) {
-        require_login($courseorid = NULL, $autologinguest);
+        global $cm;
+        require_login($this->course, $autologinguest, $cm);
     } // function require_login
 
 
