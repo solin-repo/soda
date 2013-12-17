@@ -267,6 +267,16 @@ class controller {
 		}
 	} // function create_messages
 
+
+    function set_notification($notification) {
+        $_SESSION['messages']['notification'] = $notification;
+    } // function set_notification
+
+
+    function set_error($error) {
+        $_SESSION['messages']['error'] = $error;
+    } // function set_error
+
 	
     /**
      * Prints a message from the session object.
@@ -314,7 +324,7 @@ class controller {
      * </code>
      *
      * @param string $action        The action to redirect to 
-     * @param array  $parameters    Optional: Key - value pairs specifying the parameter its content
+     * @param array  $parameters    Optional: Key - value pairs specifying the parameter's content
      * @param array  $messages      Optional: 'Ruby on Rails Flash'-type messages, identified with a key
      *                                        The messages will be displayed in the view associated with $action
      *                                        (See controller#create_messages).
@@ -373,7 +383,7 @@ class controller {
 
 
         ob_start(); // Start output buffering
-        $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
+        $prefix = ($this->plugin_type != 'mod') ? "{$this->plugin_type}_" : '';
         $str_mod_name_singular = get_string('modulename', $prefix.$mod_name);
         /*
         $navigation = build_navigation( get_string('modulename', $mod_name) );
@@ -418,7 +428,7 @@ class controller {
             $PAGE->set_heading(format_string($course->fullname));
         }
         
-        $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
+        $prefix = ($this->plugin_type != 'mod') ? "{$this->plugin_type}_" : '';
         $PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);

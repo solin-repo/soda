@@ -94,7 +94,7 @@ class soda {
     var $overriding_no_layout = false;
     var $mod_name = false;
     var $plugin_type = 'mod';
-    static $supported_plugins = array('mod', 'report');
+    static $supported_plugins = array('mod', 'report', 'local');
 
     /**
      * Instantiates soda class and creates all standard Moodle module library functions.
@@ -141,6 +141,7 @@ class soda {
                 ${$mod_name} = static::get_module_instance($activity_id);
                 static::set_variables($mod_name);
                 break;
+            case 'local':
             case 'report':
                 $course = $DB->get_record( 'course', array('id' => $id) );
                 break;
