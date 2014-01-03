@@ -30,6 +30,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 class user extends model {
+
+    public static $table_name = 'user';
 	
     /* Menno de Ridder, 24-11-2011
      *

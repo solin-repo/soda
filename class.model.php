@@ -83,7 +83,7 @@ class model {
 
         //provision for class names with a namespace in front of it
         $array = explode('\\', get_called_class());
-        return end($array);
+        return end($array) . 's';
     } // function table_name
 
 
