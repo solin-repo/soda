@@ -1090,7 +1090,7 @@ class model {
      * If the validation failes, the object is not saved. Instead, false is returned.
      *
      * @param  integer  Id of the object to save (optional)
-     * @return boolean  Returns true upon success, otherwise false
+     * @return integer  Returns the record id of the object upon success, otherwise false
      */
     function save($record_id = false) {
         if (!$this->validate()) return false;
