@@ -527,9 +527,8 @@ class controller {
         // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
         if (! ($this->no_layout || $this->overriding_no_layout) ) $this->_prepare_moodle_header($this->mod_name);
 
-        foreach($data_array as $variable_name => $value) {
-            $$variable_name = $value;
-        }
+        extract($data_array);
+
         //include correct view
         $trace = debug_backtrace();
         $this->view = ($view) ? $view : $trace[1]['function'];
