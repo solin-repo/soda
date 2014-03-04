@@ -246,7 +246,7 @@ class soda {
         $mod_name = get_called_class();
         global $CFG, $cm, $PAGE, $soda_module_name, ${$mod_name}, $course;
 
-        $this->set_page_variables($cm, $course);
+        //$this->set_page_variables($cm, $course);
 
         ob_start(); // Start output buffering
         $controller = $this->dispatch($action, $overriding_controller);
@@ -265,16 +265,16 @@ class soda {
     } // function add_layout_and_dispatch
 
 
+    /*
     function set_page_variables($cm, $course) {
         // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
         //                           require_login() or $PAGE->set_context(). The page may not display correctly 
         //                           as a result"  
         if ($this->overriding_no_layout) return;
-        /*
-        if ($this->plugin_type == 'mod') return require_course_login($course, true, $cm);
-        require_login($course); 
-         */
+        //if ($this->plugin_type == 'mod') return require_course_login($course, true, $cm);
+        //require_login($course); 
     } // function set_page_variables
+     */
 
 
     /**

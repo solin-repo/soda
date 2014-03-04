@@ -409,12 +409,13 @@ class controller {
         global $PAGE, $cm;        
 
         if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
-
-        if ($cm) $PAGE->set_cm($cm, $course); // sets up global $COURSE
-
-        // This call CHANGES THE NAVBAR
-        $PAGE->set_course($course); // sets up global $COURSE
-        //$PAGE->set_pagelayout('incourse');
+        if ($cm) {
+            $PAGE->set_cm($cm, $course); // sets up global $COURSE
+            $PAGE->set_pagelayout('incourse');
+        } else {
+            // This call CHANGES THE NAVBAR
+            $PAGE->set_course($course); // sets up global $COURSE
+        }
 
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
         if (is_object($cm)) $query_array['id'] = $cm->id; // reports don't have $cm objects
