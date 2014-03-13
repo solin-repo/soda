@@ -1098,6 +1098,21 @@ class model {
     } // function save
 
 
+
+    /**
+     * Create new object and save it immediately (validation is applied)
+     *
+     * @param  array  Array of properties
+     * @return object Returns the newly created object
+     */
+    static function create_and_save($properties) {
+        $class = get_called_class();
+        $object = new $class($properties);
+        $object->save();
+        return $object;
+    } // function create_and_save
+
+
     /**
      * Saves the object.
      * If you provide a record id, or a valid id property is present, the object will be updated in the database. 
