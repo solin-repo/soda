@@ -1179,8 +1179,8 @@ class model {
      * If you provide a property name $field, only the error stack for this property is checked,
      * otherwise the stack for the entire object.
      *
-     * @param  string  Name of the property to check (optional)
-     * @return string  Returns the error message or false
+     * @param  string  $field   Name of the property to check (optional)
+     * @return string           Returns the error message or false
      */
     function get_first_error($field = false) {
         return soda_error::get_first_error($this, $field);
@@ -1202,6 +1202,42 @@ class model {
         }
         return static::$plugin_type;
     } // function get_plugin_type
+
+
+    /**
+     * Expands a string like get_string does for the '$a' variable
+     * (This code was taken from the default get_string function)
+     *
+     * @param   string  $string  String to be expanded
+     * @param   mixed   $a       String or array or object to be consumed
+     * @return  string           Expanded string
+     */
+    static function expand_string($string, $a) {
+        if (! (is_array($a) or (is_object($a) && !($a instanceof lang_string))) ) {
+            // $a is just a string
+            return str_replace('{$a}', (string)$a, $string);
+        }
+
+        $a = (array)$a;
+        $search = array();
+        $replace = array();
+        foreach ($a as $key=>$value) {
+            if (is_int($key)) {
+                // we do not support numeric keys - sorry!
+                continue;
+            }
+            if (is_array($value) or (is_object($value) && !($value instanceof lang_string))) {
+                // we support just string or lang_string as value
+                continue;
+            }
+            $search[]  = '{$a->'.$key.'}';
+            $replace[] = (string)$value;
+        }
+        if ($search) {
+            $string = str_replace($search, $replace, $string);
+        }
+        return $string;
+    } // function expand_string
 
 } // class model 
 
