@@ -661,6 +661,48 @@ class controller {
     } // function create_hidden_fields
 
 
+
+    /**
+     * Returns an html string containing a navigation button. Uses the current model to derive the controller name, 
+     * unless a controller is specified in the parameter_string argument.
+     *
+     * Example:
+     *
+     * <?= $this->button_to('drives_match', get_string('drives_match', 'yourmod'), "job_id={$job->id}") ?>
+     *
+     * Returns:
+     *
+     * <a href="/mod/yourmod/index.php?id=64&action=drives_match&job_id=152&controller=job">Hyperdrive Signature Matches</a>
+     *
+     * @param  string $action            Name of the action to link to
+     * @param  string $label             Text to display in the button
+     * @param  string $parameter_string  Querystring parameters
+     * @return string                    Returns a complete hyperlink
+     */
+    function button_to($action, $label, $parameter_string = '') {
+        return "<input value='" . $label ."' type='button' onclick='window.location=\"" . $this->get_url($parameter_string) . "\"'/>";
+    } // function button_to
+
+
+    /**
+     * Wrapper for post_to_url_js, which creates a 'delete' link.
+     *
+     * Example:
+     * <code>
+     *     $this->delete_link( array('session_id' => $session->id), get_string('delete', 'local_face2face') )
+     * </code>
+     *
+     * Clicking the link will result in a dynamically constructed form being submitted (through javascript, obviously).
+     *
+     * @param  array  $parameters  Associative array to be transformed in hidden input fields
+     * @param  string $action      Controller method to be called - defaults to 'delete' (optional)
+     * @return string              Returns a string containing the javascript call
+     */
+    function delete_link($parameters, $label) {
+        return '<a onclick="' . $this->post_to_url_js($parameters) . '" href="#">' . $label . '</a>';              
+    } // function delete_link
+
+
     /**
      * Creates a call to a javascript function post_to_url.
      * This method is typically called to create the javascript code for an 'onclick' action of a hyperlink.
@@ -683,6 +725,10 @@ class controller {
         global $id;
         $quoted_parameters = array();
         foreach($parameters as $key => $value) {
+            if ($key == 'action') {
+                $action = $value;
+                continue;
+            }
             $quoted_parameters[] = "'$key': '$value'";
         }
         $parameters_string = (count($quoted_parameters)) ? join(',', $quoted_parameters) . ',' : '';
