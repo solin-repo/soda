@@ -1239,6 +1239,19 @@ class model {
         return $string;
     } // function expand_string
 
+
+
+    /**
+     * Returns the value of a property as a string.
+     *
+     * @param   string  $property  Property to be returned
+     * @return  string             Value of the property or an empty string
+     */
+    function stringify($property) {
+        return (isset($this->$property)) ? (string) $this->$property : '';
+    } // function stringify
+
+
 } // class model 
 
 ?>

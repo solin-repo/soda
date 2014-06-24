@@ -281,6 +281,11 @@ class helper {
      *
      * If the partial name contains a '/' it is assumed that full path is already specified.
      *
+     * Example:
+     * <code>
+     *     include($this->get_partial_path('single_item'));
+     * </code>
+     *
      * @param   string  $partial    Name of the partial
      * @return                      Returns string
      */
