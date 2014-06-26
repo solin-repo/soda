@@ -680,6 +680,7 @@ class controller {
      * @return string                    Returns a complete hyperlink
      */
     function button_to($action, $label, $parameter_string = '') {
+        $parameter_string = ($parameter_string == '') ? "action=$action" : "action=$action&$parameter_string";
         return "<input value='" . $label ."' type='button' onclick='window.location=\"" . $this->get_url($parameter_string) . "\"'/>";
     } // function button_to
 
@@ -695,7 +696,7 @@ class controller {
      * Clicking the link will result in a dynamically constructed form being submitted (through javascript, obviously).
      *
      * @param  array  $parameters  Associative array to be transformed in hidden input fields
-     * @param  string $action      Controller method to be called - defaults to 'delete' (optional)
+     * @param  string $label       Label for the link
      * @return string              Returns a string containing the javascript call
      */
     function delete_link($parameters, $label) {
