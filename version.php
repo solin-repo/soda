@@ -33,5 +33,5 @@
  * File required by Moodle. Sets current version number for this module.
  * @package Soda
  */
-$plugin->version  = 2014061300;
+$plugin->version  = 2014063000;
 ?>

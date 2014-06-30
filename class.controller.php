@@ -407,6 +407,7 @@ class controller {
      */
     public function set_page_variables($mod_name, $course = false) {
         global $PAGE, $cm;        
+        //require_login();
 
         if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
         if ($cm) {
@@ -415,6 +416,7 @@ class controller {
         } else {
             // This call CHANGES THE NAVBAR
             $PAGE->set_course($course); // sets up global $COURSE
+            // $PAGE->set_pagelayout('incourse'); // produces Navigation and Settings blocks, but not breadcrumbs menu
         }
 
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
@@ -424,13 +426,14 @@ class controller {
         }
         $query_array = self::remove_block_parameters(self::flatten_array($query_array));
 
-        $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
+        //$PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
+        $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", array('id' => $query_array['id']));
         if ($course) {
-            $PAGE->set_heading(format_string($course->fullname));
+            $PAGE->set_heading(format_string($course->fullname)); // produces Header (logo and login/logout link)
         }
         
         $prefix = ($this->plugin_type != 'mod') ? "{$this->plugin_type}_" : '';
-        $PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
+        //$PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);
         }
@@ -677,11 +680,13 @@ class controller {
      * @param  string $action            Name of the action to link to
      * @param  string $label             Text to display in the button
      * @param  string $parameter_string  Querystring parameters
+     * @param  string $new_window        Opens new window if true. Defaults to false.
      * @return string                    Returns a complete hyperlink
      */
-    function button_to($action, $label, $parameter_string = '') {
+    function button_to($action, $label, $parameter_string = '', $new_window = false) {
         $parameter_string = ($parameter_string == '') ? "action=$action" : "action=$action&$parameter_string";
-        return "<input value='" . $label ."' type='button' onclick='window.location=\"" . $this->get_url($parameter_string) . "\"'/>";
+        $onclick = ($new_window) ? 'window.open("' . $this->get_url($parameter_string) . '")' : 'window.location="' . $this->get_url($parameter_string) . '"'; 
+        return "<input value='" . $label ."' type='button' onclick='$onclick'/>";
     } // function button_to
 
 
