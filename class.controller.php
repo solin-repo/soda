@@ -409,14 +409,14 @@ class controller {
         global $PAGE, $cm;        
         //require_login();
 
+        $PAGE->set_pagelayout('standard'); // produces Navigation ($PAGE->navigation) and Settings ($PAGE->settingsnav) blocks, but not breadcrumbs menu
         if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
         if ($cm) {
             $PAGE->set_cm($cm, $course); // sets up global $COURSE
             $PAGE->set_pagelayout('incourse');
         } else {
-            // This call CHANGES THE NAVBAR
+            // This call CHANGES THE NAVBAR (breadcrumbs menu)
             $PAGE->set_course($course); // sets up global $COURSE
-            // $PAGE->set_pagelayout('incourse'); // produces Navigation and Settings blocks, but not breadcrumbs menu
         }
 
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
@@ -426,7 +426,6 @@ class controller {
         }
         $query_array = self::remove_block_parameters(self::flatten_array($query_array));
 
-        //$PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
         if (!isset($PAGE->_url)) $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", array('id' => $query_array['id']));
         if ($course) {
             $PAGE->set_heading(format_string($course->fullname)); // produces Header (logo and login/logout link)
