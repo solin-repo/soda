@@ -94,7 +94,7 @@ class soda {
     var $overriding_no_layout = false;
     var $mod_name = false;
     var $plugin_type = 'mod';
-    static $supported_plugins = array('mod', 'report');
+    static $supported_plugins = array('mod', 'report', 'local');
 
     /**
      * Instantiates soda class and creates all standard Moodle module library functions.
@@ -141,6 +141,7 @@ class soda {
                 ${$mod_name} = static::get_module_instance($activity_id);
                 static::set_variables($mod_name);
                 break;
+            case 'local':
             case 'report':
                 $course = $DB->get_record( 'course', array('id' => $id) );
                 break;
@@ -245,11 +246,7 @@ class soda {
         $mod_name = get_called_class();
         global $CFG, $cm, $PAGE, $soda_module_name, ${$mod_name}, $course;
 
-        // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
-        //                           require_login() or $PAGE->set_context(). The page may not display correctly 
-        //                           as a result"  
-        if (! $this->overriding_no_layout) require_login($course);
-        //if (! $this->overriding_no_layout) require_course_login($course, true, $cm);
+        //$this->set_page_variables($cm, $course);
 
         ob_start(); // Start output buffering
         $controller = $this->dispatch($action, $overriding_controller);
@@ -262,11 +259,22 @@ class soda {
         }
         // retrieve the stored moodle header from the controller
         $header = $controller->get_moodle_header();
-
         echo $header;
         echo $content;
         $this->print_footer(get_called_class());
     } // function add_layout_and_dispatch
+
+
+    /*
+    function set_page_variables($cm, $course) {
+        // Included to fix problem: "Coding problem: $PAGE->context was not set. You may have forgotten to call 
+        //                           require_login() or $PAGE->set_context(). The page may not display correctly 
+        //                           as a result"  
+        if ($this->overriding_no_layout) return;
+        //if ($this->plugin_type == 'mod') return require_course_login($course, true, $cm);
+        //require_login($course); 
+    } // function set_page_variables
+     */
 
 
     /**
@@ -284,6 +292,7 @@ class soda {
 
     /**
      * Returns Moodle layout header
+     * WARNING: NOT USED ANYMORE - TO BE REMOVED IN SOME FUTURE VERSION
      *
      * @param   string  $mod_name   Name of the module
      * @return  string              Returns Moodle layout header
@@ -492,7 +501,6 @@ class soda {
     static function get_module_instance($activity_id = false) { 
         global $course, $cm, $id, $DB;
         
-
         if ($activity_id) {
             $mod_instance  = $DB->get_record(get_called_class(), array('id' => $activity_id), '*', MUST_EXIST);
             $course     = $DB->get_record('course', array('id' => $mod_instance->course), '*', MUST_EXIST);
@@ -505,7 +513,6 @@ class soda {
             error('You must specify a course_module ID or an instance ID');
         }
         $id = $cm->id;
-
         /*
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         global $PAGE;
@@ -534,10 +541,10 @@ class soda {
          */
         
         if (isset($context)) return;
-        if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+        if (!$context = context_module::instance($cm->id)) {
             print_error('badcontext');
         }  
-        //$PAGE->set_context($context);
+        $PAGE->set_context($context);
     } // function set_variables
 
 

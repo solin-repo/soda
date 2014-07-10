@@ -83,7 +83,7 @@ class model {
 
         //provision for class names with a namespace in front of it
         $array = explode('\\', get_called_class());
-        return end($array);
+        return end($array) . 's';
     } // function table_name
 
 
@@ -1090,12 +1090,27 @@ class model {
      * If the validation failes, the object is not saved. Instead, false is returned.
      *
      * @param  integer  Id of the object to save (optional)
-     * @return boolean  Returns true upon success, otherwise false
+     * @return integer  Returns the record id of the object upon success, otherwise false
      */
     function save($record_id = false) {
         if (!$this->validate()) return false;
         return $this->save_without_validation($record_id);
     } // function save
+
+
+
+    /**
+     * Create new object and save it immediately (validation is applied)
+     *
+     * @param  array  Array of properties
+     * @return object Returns the newly created object
+     */
+    static function create_and_save($properties) {
+        $class = get_called_class();
+        $object = new $class($properties);
+        $object->save();
+        return $object;
+    } // function create_and_save
 
 
     /**
@@ -1164,8 +1179,8 @@ class model {
      * If you provide a property name $field, only the error stack for this property is checked,
      * otherwise the stack for the entire object.
      *
-     * @param  string  Name of the property to check (optional)
-     * @return string  Returns the error message or false
+     * @param  string  $field   Name of the property to check (optional)
+     * @return string           Returns the error message or false
      */
     function get_first_error($field = false) {
         return soda_error::get_first_error($this, $field);
@@ -1187,6 +1202,55 @@ class model {
         }
         return static::$plugin_type;
     } // function get_plugin_type
+
+
+    /**
+     * Expands a string like get_string does for the '$a' variable
+     * (This code was taken from the default get_string function)
+     *
+     * @param   string  $string  String to be expanded
+     * @param   mixed   $a       String or array or object to be consumed
+     * @return  string           Expanded string
+     */
+    static function expand_string($string, $a) {
+        if (! (is_array($a) or (is_object($a) && !($a instanceof lang_string))) ) {
+            // $a is just a string
+            return str_replace('{$a}', (string)$a, $string);
+        }
+
+        $a = (array)$a;
+        $search = array();
+        $replace = array();
+        foreach ($a as $key=>$value) {
+            if (is_int($key)) {
+                // we do not support numeric keys - sorry!
+                continue;
+            }
+            if (is_array($value) or (is_object($value) && !($value instanceof lang_string))) {
+                // we support just string or lang_string as value
+                continue;
+            }
+            $search[]  = '{$a->'.$key.'}';
+            $replace[] = (string)$value;
+        }
+        if ($search) {
+            $string = str_replace($search, $replace, $string);
+        }
+        return $string;
+    } // function expand_string
+
+
+
+    /**
+     * Returns the value of a property as a string.
+     *
+     * @param   string  $property  Property to be returned
+     * @return  string             Value of the property or an empty string
+     */
+    function stringify($property) {
+        return (isset($this->$property)) ? (string) $this->$property : '';
+    } // function stringify
+
 
 } // class model 
 

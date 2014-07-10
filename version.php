@@ -1,5 +1,4 @@
 <?php
-// The Halloween 2012 Edition
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
 // NOTICE OF COPYRIGHT                                                     //
@@ -33,6 +32,5 @@
  * File required by Moodle. Sets current version number for this module.
  * @package Soda
  */
-//$plugin->version  = 2012011201;
-$plugin->version  = 2012103101;
+$plugin->version  = 2014063001;
 ?>

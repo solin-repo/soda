@@ -88,7 +88,7 @@ class controller {
         $this->action = ($action) ? $action : optional_param('action', 'index', PARAM_RAW);
         $this->{$instance_id_name} = $this->instance_id = $mod_instance_id;
         if (isset($USER) && ($USER->id != 0)) $this->user = $USER;
-        $this->course_id = $this->course->id;
+        if (isset($this->course) && is_object($this->course)) $this->course_id = $this->course->id;
 
     } // function __construct
 
@@ -249,7 +249,8 @@ class controller {
      * @return void
      */
     function require_login($autologinguest = false) {
-        require_login($courseorid = NULL, $autologinguest);
+        global $cm;
+        require_login($this->course, $autologinguest, $cm);
     } // function require_login
 
 
@@ -265,6 +266,16 @@ class controller {
 			$_SESSION['messages'][$key] = $message;
 		}
 	} // function create_messages
+
+
+    function set_notification($notification) {
+        $_SESSION['messages']['notification'] = $notification;
+    } // function set_notification
+
+
+    function set_error($error) {
+        $_SESSION['messages']['error'] = $error;
+    } // function set_error
 
 	
     /**
@@ -313,7 +324,7 @@ class controller {
      * </code>
      *
      * @param string $action        The action to redirect to 
-     * @param array  $parameters    Optional: Key - value pairs specifying the parameter its content
+     * @param array  $parameters    Optional: Key - value pairs specifying the parameter's content
      * @param array  $messages      Optional: 'Ruby on Rails Flash'-type messages, identified with a key
      *                                        The messages will be displayed in the view associated with $action
      *                                        (See controller#create_messages).
@@ -365,14 +376,14 @@ class controller {
      * @return  string              Returns Moodle layout header
      */
 	protected function _prepare_moodle_header($mod_name) {
-        global $cm, $course, $CFG, $OUTPUT, $context;
+        global $cm, $course, $CFG, $OUTPUT, $context, $PAGE;
 
         if ($this->overriding_no_layout) return;
-        $this->set_page_variables($mod_name);
+        $this->set_page_variables($mod_name, $course);
 
 
         ob_start(); // Start output buffering
-        $prefix = ($this->plugin_type == 'report') ? 'report_' : '';
+        $prefix = ($this->plugin_type != 'mod') ? "{$this->plugin_type}_" : '';
         $str_mod_name_singular = get_string('modulename', $prefix.$mod_name);
         /*
         $navigation = build_navigation( get_string('modulename', $mod_name) );
@@ -396,6 +407,18 @@ class controller {
      */
     public function set_page_variables($mod_name, $course = false) {
         global $PAGE, $cm;        
+        //require_login();
+
+        $PAGE->set_pagelayout('standard'); // produces Navigation ($PAGE->navigation) and Settings ($PAGE->settingsnav) blocks, but not breadcrumbs menu
+        if ($this->plugin_type == 'report') $PAGE->set_pagelayout('admin');
+        if ($cm) {
+            $PAGE->set_cm($cm, $course); // sets up global $COURSE
+            $PAGE->set_pagelayout('incourse');
+        } else {
+            // This call CHANGES THE NAVBAR (breadcrumbs menu)
+            $PAGE->set_course($course); // sets up global $COURSE
+        }
+
         $query_array = array('action' => $this->action, 'controller' => optional_param('controller', $mod_name, PARAM_RAW));
         if (is_object($cm)) $query_array['id'] = $cm->id; // reports don't have $cm objects
         if (isset($_REQUEST)) {
@@ -403,18 +426,24 @@ class controller {
         }
         $query_array = self::remove_block_parameters(self::flatten_array($query_array));
 
-        $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", $query_array);
-        if ($course) $PAGE->set_heading(format_string($course->fullname));
+        if (!isset($PAGE->_url)) $PAGE->set_url("/{$this->plugin_type}/$mod_name/index.php", array('id' => $query_array['id']));
+        if ($course) {
+            $PAGE->set_heading(format_string($course->fullname)); // produces Header (logo and login/logout link)
+        }
         
+        $prefix = ($this->plugin_type != 'mod') ? "{$this->plugin_type}_" : '';
+        //$PAGE->set_title(format_string(get_string('modulename', $prefix.$mod_name)));
         if (isset($this->_page_title)) {
             $PAGE->set_title($this->_page_title);
-            $PAGE->set_heading($this->_page_title, 3);
         }
+
         if (isset($this->_nav_title)) {
             $PAGE->navbar->ignore_active();
             $PAGE->navbar->add($this->_nav_title, $this->_nav_link);
         }
-        if ($this->plugin_type == 'report') $PAGE->set_pagelayout('report');
+
+        $PAGE->add_body_class("{$this->plugin_type}_{$this->mod_name}_{$this->model_name}");
+
     } // function set_page_variables
 
 
@@ -501,9 +530,8 @@ class controller {
         // hack to make Moodle populate the $OUTPUT variable correctly (instead of a bootstrap_renderer)
         if (! ($this->no_layout || $this->overriding_no_layout) ) $this->_prepare_moodle_header($this->mod_name);
 
-        foreach($data_array as $variable_name => $value) {
-            $$variable_name = $value;
-        }
+        extract($data_array);
+
         //include correct view
         $trace = debug_backtrace();
         $this->view = ($view) ? $view : $trace[1]['function'];
@@ -635,6 +663,51 @@ class controller {
     } // function create_hidden_fields
 
 
+
+    /**
+     * Returns an html string containing a navigation button. Uses the current model to derive the controller name, 
+     * unless a controller is specified in the parameter_string argument.
+     *
+     * Example:
+     *
+     * <?= $this->button_to('drives_match', get_string('drives_match', 'yourmod'), "job_id={$job->id}") ?>
+     *
+     * Returns:
+     *
+     * <a href="/mod/yourmod/index.php?id=64&action=drives_match&job_id=152&controller=job">Hyperdrive Signature Matches</a>
+     *
+     * @param  string $action            Name of the action to link to
+     * @param  string $label             Text to display in the button
+     * @param  string $parameter_string  Querystring parameters
+     * @param  string $new_window        Opens new window if true. Defaults to false.
+     * @return string                    Returns a complete hyperlink
+     */
+    function button_to($action, $label, $parameter_string = '', $new_window = false) {
+        $parameter_string = ($parameter_string == '') ? "action=$action" : "action=$action&$parameter_string";
+        $onclick = ($new_window) ? 'window.open("' . $this->get_url($parameter_string) . '")' : 'window.location="' . $this->get_url($parameter_string) . '"'; 
+        return "<input value='" . $label ."' type='button' onclick='$onclick'/>";
+    } // function button_to
+
+
+    /**
+     * Wrapper for post_to_url_js, which creates a 'delete' link.
+     *
+     * Example:
+     * <code>
+     *     $this->delete_link( array('session_id' => $session->id), get_string('delete', 'local_face2face') )
+     * </code>
+     *
+     * Clicking the link will result in a dynamically constructed form being submitted (through javascript, obviously).
+     *
+     * @param  array  $parameters  Associative array to be transformed in hidden input fields
+     * @param  string $label       Label for the link
+     * @return string              Returns a string containing the javascript call
+     */
+    function delete_link($parameters, $label) {
+        return '<a onclick="' . $this->post_to_url_js($parameters) . '" href="#">' . $label . '</a>';              
+    } // function delete_link
+
+
     /**
      * Creates a call to a javascript function post_to_url.
      * This method is typically called to create the javascript code for an 'onclick' action of a hyperlink.
@@ -657,6 +730,10 @@ class controller {
         global $id;
         $quoted_parameters = array();
         foreach($parameters as $key => $value) {
+            if ($key == 'action') {
+                $action = $value;
+                continue;
+            }
             $quoted_parameters[] = "'$key': '$value'";
         }
         $parameters_string = (count($quoted_parameters)) ? join(',', $quoted_parameters) . ',' : '';
