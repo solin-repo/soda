@@ -133,14 +133,14 @@ class helper {
      * <code>
      * <h1>Items</h1>
      * <ul id='todotwo_list'>
-     * <? 
+     * <?php 
      * foreach($items as $item) { 
      *     include($this->get_partial_path('single_item'));
      * } ?>
      * </ul>
      * <?= $this->ajax_form(array('action' => $this->get_url('action=test')), 'append', '#todotwo_list', function() { ?>
      *     <p>title: <input type="text" name="item[title]" value="" /><input type="submit" name="submit" value="Add"/></p>
-     * <? }); ?>
+     * <?php }); ?>
      * </code>
      *
      * In this example, each 'title' is added to the unordered list as a list item (we are not showing

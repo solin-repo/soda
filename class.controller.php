@@ -778,7 +778,7 @@ class controller {
      * @return boolean Returns true if admin, otherwise false
      */   
     static function is_admin() {
-        return has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM));        
+        return has_capability('moodle/site:config', context_system::instance());        
     } // function is_admin
 } // class controller
 
